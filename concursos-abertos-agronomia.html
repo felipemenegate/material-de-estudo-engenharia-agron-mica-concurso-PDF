@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concursos e Vagas de Agronomia | Agronomia Concurso Apostila</title>
+    <meta name="description" content="Encontre as últimas vagas e concursos públicos na área de agronomia. Conteúdo atualizado diariamente para engenheiros agrônomos, técnicos e estudantes.">
+    <meta name="keywords" content="vagas agronomia, concursos agronomia, engenheiro agrônomo, técnico agrícola, agronomia, emprego agronomia, apostila agronomia, concurso público agronomia">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="[https://www.agronomiaconcursoapostila.com.br/](https://www.agronomiaconcursoapostila.com.br/)">
+
+    <!-- Open Graph Meta Tags (para compartilhamento em redes sociais) -->
+    <meta property="og:title" content="Concursos e Vagas de Agronomia | Agronomia Concurso Apostila">
+    <meta property="og:description" content="As melhores vagas e concursos para agrônomos e técnicos agrícolas. Mantenha-se atualizado com as oportunidades no setor de agronomia.">
+    <meta property="og:url" content="[https://www.agronomiaconcursoapostila.com.br/](https://www.agronomiaconcursoapostila.com.br/)">
+    <meta property="og:type" content="website">
+    <!-- Adicione uma imagem relevante para o Open Graph, se tiver uma: -->
+    <!-- <meta property="og:image" content="[https://www.agronomiaconcursoapostila.com.br/images/social-share.jpg](https://www.agronomiaconcursoapostila.com.br/images/social-share.jpg)"> -->
+    <!-- <meta property="og:image:alt" content="Ilustração de campos agrícolas ou profissional de agronomia"> -->
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Concursos e Vagas de Agronomia | Agronomia Concurso Apostila">
+    <meta name="twitter:description" content="As melhores vagas e concursos para agrônomos e técnicos agrícolas. Mantenha-se atualizado com as oportunidades no setor de agronomia.">
+    <!-- Adicione uma imagem relevante para o Twitter Card, se tiver uma: -->
+    <!-- <meta name="twitter:image" content="[https://www.agronomiaconcursoapostila.com.br/images/twitter-share.jpg](https://www.agronomiaconcursoapostila.com.br/images/twitter-share.jpg)"> -->
+
+    <!-- Inclui Tailwind CSS via CDN -->
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <link href="[https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap)" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Cor de fundo suave */
+        }
+    </style>
+
+    <!-- Schema.org Markup (JSON-LD) para otimização de SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "[https://schema.org](https://schema.org)",
+      "@type": "CollectionPage",
+      "name": "Concursos e Vagas de Agronomia",
+      "description": "Plataforma para encontrar as últimas vagas de emprego e concursos públicos na área de agronomia no Brasil.",
+      "url": "[https://www.agronomiaconcursoapostila.com.br/](https://www.agronomiaconcursoapostila.com.br/)",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Agronomia Concurso Apostila",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "[https://www.agronomiaconcursoapostila.com.br/images/logo.png](https://www.agronomiaconcursoapostila.com.br/images/logo.png)"
+        }
+      }
+    }
+    </script>
+</head>
+<body class="antialiased">
+    <div class="min-h-screen flex flex-col items-center py-8 px-4 sm:px-6 lg:px-8">
+        <!-- Cabeçalho do Site -->
+        <header class="w-full max-w-4xl text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-900 mb-2 rounded-lg">
+                <span class="bg-gradient-to-r from-green-500 to-blue-500 text-white px-4 py-2 rounded-lg shadow-lg">
+                    Agronomia Concurso Apostila
+                </span>
+            </h1>
+            <p class="text-lg text-gray-700">As últimas vagas e concursos para profissionais de Agronomia.</p>
+        </header>
+
+        <!-- Seção de Posts Raspados -->
+        <main class="w-full max-w-4xl bg-white p-6 rounded-xl shadow-lg">
+            <h2 class="text-3xl font-semibold text-gray-800 mb-6 border-b-2 border-green-500 pb-2">Últimas Vagas de Agronomia</h2>
+
+            <div id="posts-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+                <!-- Posts serão carregados aqui dinamicamente -->
+            </div>
+            <div id="loading-message" class="text-center text-gray-600 mt-8">Carregando vagas...</div>
+            <div id="error-message" class="text-center text-red-600 mt-8 hidden">Erro ao carregar as vagas. Tente novamente mais tarde.</div>
+        </main>
+
+        <!-- Rodapé (opcional) -->
+        <footer class="w-full max-w-4xl text-center mt-8 text-gray-600 text-sm">
+            <p>&copy; 2024 Agronomia Concurso Apostila. Todos os direitos reservados.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const postsContainer = document.getElementById('posts-container');
+            const loadingMessage = document.getElementById('loading-message');
+            const errorMessage = document.getElementById('error-message');
+
+            // Função para renderizar os posts no HTML
+            function renderPosts(posts) {
+                postsContainer.innerHTML = ''; // Limpa o conteúdo existente
+                if (posts.length === 0) {
+                    postsContainer.innerHTML = '<p class="text-center text-gray-700">Nenhuma vaga encontrada no momento.</p>';
+                } else {
+                    posts.forEach(post => {
+                        const article = document.createElement('article');
+                        article.className = 'bg-gray-50 p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-200';
+
+                        article.innerHTML = `
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">
+                                <a href="${post.link}" class="hover:text-green-600 transition-colors duration-200" target="_blank" rel="noopener noreferrer">${post.title}</a>
+                            </h3>
+                            <p class="text-gray-700 mb-4">
+                                ${post.description}
+                            </p>
+                            <a href="${post.link}" class="inline-block bg-blue-600 text-white px-5 py-2 rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-200" target="_blank" rel="noopener noreferrer">Ver Detalhes</a>
+                        `;
+                        postsContainer.appendChild(article);
+                    });
+                }
+            }
+
+            // Função para buscar os dados do arquivo JSON
+            async function fetchPosts() {
+                loadingMessage.classList.remove('hidden'); // Mostra a mensagem de carregamento
+                errorMessage.classList.add('hidden');    // Esconde qualquer mensagem de erro anterior
+                postsContainer.innerHTML = ''; // Limpa o container antes de carregar
+
+                try {
+                    // Tenta buscar o arquivo posts.json do mesmo diretório
+                    const response = await fetch('posts.json');
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const posts = await response.json();
+                    renderPosts(posts);
+                } catch (error) {
+                    console.error("Could not fetch posts:", error);
+                    errorMessage.classList.remove('hidden'); // Mostra a mensagem de erro
+                    postsContainer.innerHTML = ''; // Garante que nenhum post seja mostrado
+                } finally {
+                    loadingMessage.classList.add('hidden'); // Esconde a mensagem de carregamento
+                }
+            }
+
+            fetchPosts(); // Chama a função para buscar e renderizar os posts ao carregar a página
+        });
+    </script>
+</body>
+</html>

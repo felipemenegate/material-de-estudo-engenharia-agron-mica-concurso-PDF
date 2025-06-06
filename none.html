@@ -1,1 +1,410 @@
-none
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Título otimizado para SEO com palavras-chave relevantes e atrativas -->
+    <title>Concursos Públicos de Agronomia Abertos no Brasil | Vagas e Editais</title>
+    <!-- Meta descrição aprimorada, focando em palavras-chave e proposta de valor -->
+    <meta name="description" content="Encontre os últimos Concursos Públicos de Agronomia Abertos no Brasil. Vagas imediatas, editais e preparação completa para engenheiros agrônomos e técnicos agrícolas.">
+    <!-- Meta palavras-chave expandidas e mais focadas -->
+    <meta name="keywords" content="Concursos Públicos de Agronomia Abertos no Brasil, vagas agronomia, concursos agronomia, engenheiro agrônomo, técnicos agrícolas, concurso público agronomia, aprovação concursos, treinamento agronomia, edital verticalizado, estudar para concurso, carreira agronomia, vagas agro, empregos agronomia, preparatório concursos, concursos abertos agronomia, agronomia 2024, agronomia 2025">
+    
+    <!-- Canonical URL - Crucial para SEO, aponta para a versão preferencial da página -->
+    <link rel="canonical" href="https://www.agronomiaconcursoapostila.com.br/concursos-abertos-agronomia.html">
+
+    <!-- Open Graph Meta Tags (para otimização de compartilhamento em redes sociais como Facebook/LinkedIn) -->
+    <meta property="og:title" content="Concursos Públicos de Agronomia Abertos no Brasil | Sua Chance de Aprovação">
+    <meta property="og:description" content="Não perca os Concursos Públicos de Agronomia Abertos no Brasil! Encontre vagas, acesse editais e impulsione sua aprovação com nosso treinamento exclusivo.">
+    <meta property="og:url" content="https://www.agronomiaconcursoapostila.com.br/concursos-abertos-agronomia.html">
+    <meta property="og:type" content="website">
+    <!-- URLs absolutas para imagens de Open Graph (otimizadas para redes sociais) -->
+    <meta property="og:image" content="https://www.agronomiaconcursoapostila.com.br/images/social-share.jpg">
+    <meta property="og:image:width" content="1200"> <!-- Dimensões recomendadas para OG image -->
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Profissional de Agronomia estudando para concurso, ilustração de sucesso">
+
+    <!-- Inclui Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inclui Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Estilos CSS personalizados, incluindo o modal -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Cor de fundo suave */
+        }
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+        .modal.is-open {
+            display: flex;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .modal.is-open .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+        .close-button {
+            color: #777;
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 38px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s ease-in-out;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: #333;
+            text-decoration: none;
+        }
+        .modal-content-body {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #333;
+            overflow-y: auto;
+        }
+        .modal-content-body h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #1f2937;
+        }
+        .modal-content-body h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+        .modal-content-body p, .modal-content-body ul {
+            margin-bottom: 1rem;
+        }
+        .modal-content-body ul {
+            list-style-position: inside;
+            padding-left: 0.5rem;
+        }
+        .modal-content-body a {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+        .modal-content-body img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+
+    <!-- Schema.org Markup (JSON-LD) para SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Concursos Públicos de Agronomia Abertos no Brasil | Vagas e Editais",
+      "description": "Plataforma líder para encontrar os últimos concursos públicos de Agronomia abertos no Brasil, com vagas imediatas e treinamento exclusivo para sua aprovação.",
+      "url": "https://www.agronomiaconcursoapostila.com.br/concursos-abertos-agronomia.html",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Agronomia Concurso Apostila",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.agronomiaconcursoapostila.com.br/images/logo.png",
+          "width": 180,
+          "height": 43,
+          "caption": "Logo da Agronomia Concurso Apostila"
+        },
+        "url": "https://www.agronomiaconcursoapostila.com.br/"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://www.agronomiaconcursoapostila.com.br/concursos-abertos-agronomia.html"
+      },
+      "about": {
+        "@type": "Thing",
+        "name": "Concursos Públicos de Agronomia Abertos no Brasil",
+        "description": "Lista atualizada de concursos e vagas para profissionais e estudantes de agronomia no Brasil."
+      },
+      "keywords": [
+        "Concursos Públicos de Agronomia Abertos no Brasil", "vagas agronomia", "concursos agronomia", "engenheiro agrônomo", "técnicos agrícolas", "concurso público agronomia", 
+        "aprovação concursos", "treinamento agronomia", "edital verticalizado", "estudar para concurso agronomia", 
+        "carreira agronomia", "empregos agronomia", "preparatório concursos agronomia", "agronomia 2024", "agronomia 2025"
+      ],
+      "inLanguage": "pt-BR"
+    }
+    </script>
+</head>
+<body class="antialiased">
+    <div class="min-h-screen flex flex-col items-center py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-green-100 via-blue-100 to-green-200">
+        <!-- Cabeçalho do Site -->
+        <header class="w-full max-w-4xl text-center mb-8 bg-white p-6 rounded-2xl shadow-xl border-b-4 border-blue-500 flex flex-col items-center">
+            <a href="http://agronomiaconcursoapostila.com.br/" target="_blank" rel="noopener noreferrer" class="mb-4 w-full flex justify-center">
+                <img src="https://i.imgur.com/URgsoAA.jpeg" alt="Banner publicitário Agronomia Concurso Apostila" 
+                     class="w-full max-w-lg h-auto rounded-lg shadow-md hover:scale-105 transition-transform duration-300 object-contain">
+            </a>
+            <h1 class="text-4xl font-extrabold text-gray-900 mb-2 rounded-lg">
+                <span class="bg-gradient-to-r from-green-600 to-blue-600 text-white px-6 py-3 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300 inline-block">
+                    Agronomia Concurso Apostila
+                </span>
+            </h1>
+            <p class="text-lg text-gray-700 mt-2">Sua fonte diária de **vagas e concursos** para o universo da Agronomia.</p>
+        </header>
+
+        <!-- Seção de Instruções -->
+        <section class="w-full max-w-4xl bg-yellow-50 p-6 rounded-xl shadow-md border-l-4 border-yellow-400 mb-8 text-left">
+            <h3 class="text-2xl font-bold text-yellow-800 mb-4 flex items-center">
+                <svg class="w-7 h-7 mr-3 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                Guia Rápido: Conquiste Seu Concurso!
+            </h3>
+            <p class="text-gray-800 mb-3 leading-relaxed">
+                <strong>1. Veja os Detalhes</strong><br>
+                Clique no <strong>título do concurso</strong> para abrir um resumo com as principais informações: inscrições, etapas e muito mais.
+            </p>
+            <p class="text-gray-800 mb-3 leading-relaxed">
+                <strong>2. A Chave da Aprovação: O Edital!</strong><br>
+                No resumo, você encontrará o link para o site original. Baixe o edital completo e estude cada detalhe. Dominar as regras é o primeiro passo para a aprovação.
+            </p>
+        </section>
+
+        <!-- Seção de Vagas -->
+        <main class="w-full max-w-4xl bg-white p-6 rounded-xl shadow-lg border-t-4 border-green-500">
+            <h2 class="text-3xl font-semibold text-gray-800 mb-6 pb-2 border-b-2 border-green-500">Últimas Vagas de Concursos de Agronomia</h2>
+
+            <div id="posts-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+                <!-- Posts serão carregados aqui -->
+            </div>
+            <div id="loading-message" class="text-center text-gray-600 mt-8 py-4">Carregando vagas... <span class="animate-pulse">...</span></div>
+            <div id="error-message" class="text-center text-red-600 mt-8 hidden py-4">Erro ao carregar as vagas.<br>Por favor, recarregue a página.</div>
+        </main>
+
+        <!-- Seção de CTA -->
+        <section class="w-full max-w-4xl bg-blue-600 p-8 rounded-2xl shadow-xl mt-8 text-center text-white relative overflow-hidden flex flex-col items-center justify-center">
+            <img src="https://m.media-amazon.com/images/I/61E6pYUbf9L._SL1000_.jpg" alt="Capa do E-book de Treinamento Agronomia Concurso Apostila" 
+                 class="w-full max-w-xs h-auto rounded-lg shadow-xl mb-6 object-contain">
+            
+            <h3 class="text-3xl font-extrabold mb-4 drop-shadow-lg">
+                Conquiste Sua Vaga Pública em Agronomia!
+            </h3>
+            <p class="text-xl mb-6 max-w-2xl mx-auto font-medium opacity-90">
+                O caminho para a aprovação exige estratégia. Com a <strong>Agronomia Concurso Apostila</strong>, você tem acesso a um treinamento completo e focado nos editais.
+            </p>
+            <p class="text-lg mb-8 max-w-2xl mx-auto opacity-90">
+                Pare de perder tempo! Nossos especialistas criaram um método que te leva do básico ao avançado com simulados, aulas e suporte individualizado.
+            </p>
+            <a href="https://agronomiaconcursoapostila.com.br/" target="_blank" rel="noopener noreferrer" 
+               class="inline-block bg-green-400 text-blue-900 font-bold px-10 py-5 rounded-full text-2xl shadow-xl hover:bg-green-300 transform hover:scale-105 transition duration-300 ease-in-out border-4 border-green-500 tracking-wide">
+                QUERO SER APROVADO!
+            </a>
+            <p class="text-sm mt-6 opacity-80">Invista no seu futuro. Acesse nosso treinamento e seja o próximo aprovado!</p>
+        </section>
+
+        <!-- Seção de Blog -->
+        <section class="w-full max-w-4xl bg-white p-6 rounded-xl shadow-lg mt-8 border-t-4 border-yellow-500">
+            <h2 class="text-3xl font-semibold text-gray-800 mb-6 pb-2 border-b-2 border-yellow-500">
+                Conteúdos Essenciais para Sua Aprovação
+            </h2>
+            <p class="text-gray-700 mb-6">Aprofunde seus conhecimentos com artigos do nosso blog:</p>
+            <ul class="list-disc list-inside space-y-3 text-lg text-blue-700">
+                <li>
+                    <a href="https://agronomiaconcursoapostila.com.br/o-que-cai-concursos-agronomia-editais-reais.html" 
+                        target="_blank" rel="noopener noreferrer" 
+                        class="hover:underline font-medium text-blue-600 transition-colors duration-200">
+                        O que cai em Concursos de Agronomia? Análise de Editais Reais
+                    </a>
+                </li>
+                <li>
+                    <a href="https://agronomiaconcursoapostila.com.br/como-montar-ciclo-estudos-concurso-agronomia.html" 
+                        target="_blank" rel="noopener noreferrer" 
+                        class="hover:underline font-medium text-blue-600 transition-colors duration-200">
+                        Como Montar um Ciclo de Estudos para Concurso de Agronomia
+                    </a>
+                </li>
+                <li>
+                    <a href="https://agronomiaconcursoapostila.com.br/5-leis-essenciais-concurseiro-agronomia.html" 
+                        target="_blank" rel="noopener noreferrer" 
+                        class="hover:underline font-medium text-blue-600 transition-colors duration-200">
+                        5 Leis Essenciais que Todo Concurseiro de Agronomia Precisa Saber
+                    </a>
+                </li>
+                <li>
+                    <a href="https://blog.alfaconcursos.com.br/edital-concurso-publico/"
+                        target="_blank" rel="noopener noreferrer"
+                        class="hover:underline font-medium text-blue-600 transition-colors duration-200">
+                        Como entender o Edital de Concurso Público
+                    </a>
+                </li>
+                <li>
+                    <a href="https://blog.grancursosonline.com.br/edital-verticalizado/"
+                        target="_blank" rel="noopener noreferrer"
+                        class="hover:underline font-medium text-blue-600 transition-colors duration-200">
+                        Edital Verticalizado: A Ferramenta Essencial para Concurseiros
+                    </a>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Rodapé -->
+        <footer class="w-full max-w-4xl text-center mt-8 text-gray-600 text-sm bg-white p-6 rounded-xl shadow-md border-t-2 border-gray-200">
+            <p>&copy; 2024 Agronomia Concurso Apostila. Todos os direitos reservados.</p>
+            <p class="mt-1">Desenvolvido com foco na sua aprovação.</p>
+        </footer>
+    </div>
+
+    <!-- Modal para detalhes da vaga -->
+    <div id="vacancy-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div id="modal-content-body" class="custom-scrollbar pr-4 -mr-4">
+                <!-- Conteúdo da vaga aqui -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const postsContainer = document.getElementById('posts-container');
+            const loadingMessage = document.getElementById('loading-message');
+            const errorMessage = document.getElementById('error-message');
+            const vacancyModal = document.getElementById('vacancy-modal');
+            const modalContentBody = document.getElementById('modal-content-body');
+            const closeButton = vacancyModal.querySelector('.close-button');
+
+            // Função para renderizar os posts
+            function renderPosts(posts) {
+                postsContainer.innerHTML = ''; 
+                if (!posts || posts.length === 0) {
+                    postsContainer.innerHTML = '<p class="col-span-full text-center text-gray-700 p-8">Nenhuma vaga encontrada no momento. Verifique novamente em breve!</p>';
+                    return;
+                }
+                
+                posts.forEach((post, index) => {
+                    const article = document.createElement('article');
+                    article.id = `post-${index}`; 
+                    article.className = 'bg-gray-50 p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-200 flex flex-col justify-between';
+
+                    article.innerHTML = `
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">
+                                <a href="#" class="open-modal-btn hover:text-green-600 transition-colors duration-200" data-index="${index}">${post.title}</a>
+                            </h3>
+                            <p class="text-gray-700 mb-4 text-sm">
+                                ${post.description}
+                            </p>
+                        </div>
+                    `;
+                    postsContainer.appendChild(article);
+                });
+                
+                // Adiciona listeners para abrir o modal
+                document.querySelectorAll('.open-modal-btn').forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        const postIndex = event.currentTarget.dataset.index;
+                        const selectedPost = posts[postIndex];
+                        
+                        // Higieniza o HTML para evitar XSS
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(selectedPost.full_content_html, 'text/html');
+                        doc.querySelectorAll('script, style, link[rel="stylesheet"]').forEach(el => el.remove());
+                        doc.querySelectorAll('[on*]').forEach(el => {
+                            Array.from(el.attributes).forEach(attr => {
+                                if (attr.name.startsWith('on')) el.removeAttribute(attr.name);
+                            });
+                        });
+                        
+                        modalContentBody.innerHTML = doc.body.innerHTML || '<p>Conteúdo detalhado não disponível.</p>';
+
+                        vacancyModal.classList.add('is-open');
+                        document.body.style.overflow = 'hidden';
+                        modalContentBody.scrollTop = 0;
+                    });
+                });
+            }
+
+            // Função para fechar o modal
+            function closeModal() {
+                vacancyModal.classList.remove('is-open');
+                document.body.style.overflow = '';
+            }
+
+            // Função para buscar os posts do JSON
+            async function fetchPosts() {
+                loadingMessage.style.display = 'block';
+                errorMessage.style.display = 'none';
+                postsContainer.innerHTML = '';
+
+                try {
+                    const response = await fetch(`posts.json?v=${new Date().getTime()}`);
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    
+                    const posts = await response.json();
+                    renderPosts(posts);
+                } catch (error) {
+                    console.error("Could not fetch posts:", error);
+                    errorMessage.style.display = 'block';
+                    postsContainer.innerHTML = '<p class="col-span-full text-center text-red-700 p-8 font-semibold">Não foi possível carregar as vagas. Verifique se o arquivo `posts.json` existe e o caminho está correto.</p>';
+                } finally {
+                    loadingMessage.style.display = 'none';
+                }
+            }
+            
+            // Event listeners para fechar
+            closeButton.addEventListener('click', closeModal);
+            window.addEventListener('click', (event) => {
+                if (event.target === vacancyModal) closeModal();
+            });
+            window.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') closeModal();
+            });
+
+            // Inicia a busca pelos posts
+            fetchPosts();
+        });
+    </script>
+</body>
+</html>

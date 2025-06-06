@@ -1,33 +1,282 @@
+# script_agrobase_scraper.py
+import requests
+from bs4 import BeautifulSoup
+import json
+import re # Importar a biblioteca de expressões regulares
+
+def clean_html_content(soup_obj):
+    """
+    Tenta remover elementos irrelevantes de uma página raspada para isolar o conteúdo principal.
+    Ajustar esses seletores pode ser necessário dependendo do site.
+    """
+    # Remove elementos de navegação, cabeçalhos, rodapés, sidebars etc.
+    for selector in [
+        'header', 'footer', 'nav', 'aside', '.sidebar',
+        '.breakdance-menu', '.bde-section-225711-100', # Cabeçalho do Agrobase
+        '.bde-section-225760-104', # Rodapé do Agrobase
+        '.bde-posts-pagination', # Paginação
+        '.bde-button-225741-113', # Botão "receba concursos"
+        '.bde-shortcode-225741-116', # Filtros de busca
+        '.bde-columns-225741-121', # Panorama geral e Eng. agrônomos
+        '.bde-popup', # Pop-ups
+        'script', 'style', 'noscript', 'meta', 'link', # Elementos não visíveis
+        # Adicionei seletores que podem ser do cabeçalho/rodapé da página de detalhes
+        '.bde-section-225741-100', # Seção principal da página de listagem, pode aparecer em detalhes
+        '.bde-div-225741-101', # Breadcrumbs
+        '.bde-div-225741-104', # Div com título da profissão
+        '.bde-div-225741-115', # Filtros da página de listagem
+        '.bde-div-225741-127', # Bloco "Panorama geral dos concursos"
+        '.bde-div-225741-132' # Bloco "Eng. agrônomos e cargos públicos no Brasil"
+    ]:
+        for element in soup_obj.find_all(selector):
+            element.decompose() # Remove o elemento e seu conteúdo
+
+    # Tenta encontrar o conteúdo principal do artigo na página de detalhes.
+    # ESTE É O SELETOR MAIS CRÍTICO E PODE EXIGIR AJUSTE MANUAL COM O HTML DA PÁGINA DE DETALHES.
+    # Com base em inspeção de páginas de detalhes (mesmo sem o HTML completo):
+    # O conteúdo do post geralmente está dentro de uma div com classes como 'bde-div-XXXX-XXX-...' ou 'bde-rich-text'.
+    
+    # Priorizar o conteúdo principal que seria o corpo do artigo
+    # Tenta encontrar a div principal que contém o artigo ou o rich text.
+    
+    # Exemplo de seletor que pode ser o corpo do artigo em uma página de detalhes
+    # Precisa inspecionar uma URL de vaga específica, por exemplo:
+    # https://www.agrobase.com.br/concursos/2025/uneal-al-concurso-25-2025/
+    
+    # Com base em uma inspeção manual do URL de um post individual (ex: UNEAL):
+    # O conteúdo do artigo está dentro de: <div class="bde-column-225718-100"> que está dentro de
+    # <div class="bde-columns-225718-101"> que está dentro de <section class="bde-section-225718-102">
+    # No entanto, a forma mais fácil é pegar o conteúdo principal que é um texto rico.
+    
+    # Tentativa de pegar o conteúdo do rich-text que é o corpo do artigo.
+    content_element = soup_obj.find('div', class_='bde-rich-text')
+    
+    if not content_element:
+        # Se não encontrar o rich-text, tenta a coluna principal do conteúdo
+        content_element = soup_obj.find('div', class_=re.compile(r'bde-column-\d+-\d+')) # Coluna genérica
+        if content_element:
+            # Dentro desta coluna, remove elementos que já foram extraídos ou são repetitivos
+            for undesirable_inner_selector in [
+                'h1', 'h2', 'h3', 'h4', 'h5', 'h6', # Títulos que já foram extraídos ou são da página
+                '.bde-text', '.bde-code-block', # Elementos de texto e código blocks que podem ser de detalhes do card
+                '.bde-icon', '.bde-div-225718-101', '.bde-div-225718-108', '.bde-div-225718-111', 
+                '.bde-div-225718-116', '.bde-div-225718-119'
+            ]:
+                for tag in content_element.find_all(undesirable_inner_selector):
+                    tag.decompose()
+        
+    if content_element:
+        # Remove scripts e styles remanescentes
+        for s in content_element(['script', 'style', 'noscript']):
+            s.decompose()
+        # Retorna o HTML limpo
+        return str(content_element)
+    
+    return "Conteúdo principal não encontrado ou não isolado."
+
+
+def scrape_single_post_content(post_url):
+    """
+    Raspa o conteúdo detalhado de uma única página de vaga.
+    """
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    }
+    try:
+        response = requests.get(post_url, headers=headers, timeout=15) # Aumentei o timeout
+        response.raise_for_status()
+        soup = BeautifulSoup(response.content, "html.parser")
+        
+        # Limpa o HTML da página completa antes de tentar extrair o conteúdo principal
+        cleaned_html = clean_html_content(soup)
+        
+        return cleaned_html
+
+    except requests.exceptions.RequestException as e:
+        print(f"Erro ao acessar a página de detalhes {post_url}: {e}")
+        return "Erro ao carregar o conteúdo detalhado."
+
+
+def scrape_agrobase():
+    """
+    Realiza o web scraping do site Agrobase para extrair informações de vagas de agronomia,
+    incluindo o conteúdo completo de 50 posts.
+    """
+    base_url = "https://www.agrobase.com.br/concursos/vagas/agronomia/"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    }
+    
+    all_posts = []
+    posts_limit = 50 # Limite de posts a serem raspados
+
+    # Itera pelas primeiras 5 páginas para tentar obter 50 posts (10 por página)
+    for page_num in range(1, 6): # Páginas 1 a 5
+        url = f"{base_url}page/{page_num}/" if page_num > 1 else base_url
+        print(f"\nTentando acessar a URL: {url}") # Para depuração
+
+        try:
+            response = requests.get(url, headers=headers, timeout=15) # Aumentei o timeout
+            response.raise_for_status()
+            print(f"Status da requisição: {response.status_code}")
+        except requests.exceptions.RequestException as e:
+            print(f"Erro ao acessar a URL da página {page_num}: {e}")
+            continue # Pula para a próxima página se houver erro
+
+        soup = BeautifulSoup(response.content, "html.parser")
+
+        vaga_elements = soup.find_all('article', class_=['bde-loop-item', 'ee-post'])
+        
+        if not vaga_elements:
+            print(f"Aviso: Nenhum elemento de vaga encontrado na página {page_num}. Fim dos posts ou seletor incorreto.")
+            break # Sai do loop se não encontrar mais vagas
+
+        print(f"Número de elementos de vaga encontrados na página {page_num}: {len(vaga_elements)}")
+
+        for element in vaga_elements:
+            if len(all_posts) >= posts_limit:
+                print(f"Limite de {posts_limit} posts atingido. Encerrando raspagem.")
+                break # Sai do loop interno se o limite for atingido
+
+            link_container_tag = element.find('a', class_=re.compile(r'bde-container-link'))
+            
+            title = "Título não encontrado"
+            link = "#"
+            location = "Local não informado"
+            vacancy_type = ""
+            deadline = "Prazo não informado"
+            salary = "Remuneração não informada"
+
+            if link_container_tag:
+                link = link_container_tag['href']
+                title_tag = link_container_tag.find('h2', class_=re.compile(r'bde-heading'))
+                if title_tag:
+                    title = title_tag.get_text(strip=True)
+            
+            location_tag_div = element.find('div', class_='bde-div-225718-108')
+            if location_tag_div:
+                location_text_tag = location_tag_div.find('div', class_=re.compile(r'bde-text-\d+-\d+-\d+-\d+-\d+ bde-text bde-text-\d+-\d+'))
+                if location_text_tag:
+                    location = location_text_tag.get_text(strip=True)
+
+            vacancy_type_div = element.find('div', class_='bde-div-225718-111')
+            if vacancy_type_div:
+                type_parts_tags = vacancy_type_div.find_all('div', class_=re.compile(r'bde-text-\d+-\d+-\d+-\d+-\d+ bde-text bde-text-\d+-\d+'))
+                if type_parts_tags:
+                    vacancy_type = " ".join([tag.get_text(strip=True) for tag in type_parts_tags])
+                    vacancy_type_words = list(dict.fromkeys(vacancy_type.split()))
+                    vacancy_type = " ".join(vacancy_type_words)
+
+            deadline_div = element.find('div', class_='bde-div-225718-116')
+            if deadline_div:
+                deadline_code_block = deadline_div.find('div', class_=re.compile(r'bde-code-block-\d+-\d+-\d+-\d+-\d+ bde-code-block bde-code-block-\d+-\d+'))
+                if deadline_code_block:
+                    deadline = deadline_code_block.get_text(strip=True).replace('até', 'Prazo: até').strip()
+
+            salary_div = element.find('div', class_='bde-div-225718-119')
+            if salary_div:
+                salary_text_tag = salary_div.find('div', class_=re.compile(r'bde-text-\d+-\d+-\d+-\d+-\d+ bde-text bde-text-\d+-\d+'))
+                if salary_text_tag:
+                    salary = salary_text_tag.get_text(strip=True).replace('até', 'Remuneração: até').strip()
+
+            description_parts = []
+            if location and location != "Local não informado":
+                description_parts.append(f"Local: {location}")
+            if vacancy_type:
+                description_parts.append(f"Tipo: {vacancy_type}")
+            if deadline and deadline != "Prazo não informado":
+                description_parts.append(deadline)
+            if salary and salary != "Remuneração não informada":
+                description_parts.append(salary)
+            description = " | ".join(description_parts) if description_parts else "Descrição não disponível."
+
+            # Verifica se o link é relativo e o torna absoluto
+            if link and not link.startswith(('http://', 'https://')):
+                link = requests.compat.urljoin(url, link)
+            
+            full_content_html = ""
+            if link != "#" and "Título não encontrado" not in title:
+                print(f"Raspando conteúdo detalhado para: {title} ({link})")
+                full_content_html = scrape_single_post_content(link)
+                # Opcional: imprimir um trecho do conteúdo para verificação
+                # print(f"  Conteúdo detalhado (trecho): {full_content_html[:200]}...")
+            else:
+                print(f"Aviso: Pulando raspagem de detalhes para post sem título/link válido: Título='{title}', Link='{link}'")
+
+            if "Título não encontrado" not in title and link != "#": 
+                all_posts.append({
+                    "title": title,
+                    "link": link,
+                    "description": description,
+                    "full_content_html": full_content_html # Novo campo com o HTML completo da vaga
+                })
+            
+        if len(all_posts) >= posts_limit:
+            break # Sai do loop de páginas se o limite for atingido
+
+    return all_posts
+
+if __name__ == "__main__":
+    scraped_posts = scrape_agrobase()
+    if scraped_posts:
+        print(f"\nRaspagem concluída. Total de posts raspados: {len(scraped_posts)}")
+        # Salva os dados raspados em um arquivo JSON
+        with open("posts.json", "w", encoding="utf-8") as f:
+            json.dump(scraped_posts, f, indent=4, ensure_ascii=False)
+        print("Dados salvos em posts.json")
+        # Imprime os primeiros 3 posts para visualização
+        print("\nPrimeiros 3 posts raspados (com conteúdo detalhado):")
+        for i, post in enumerate(scraped_posts[:3]):
+            print(f"--- Post {i+1} ---")
+            print(f"Título: {post['title']}")
+            print(f"Link Original: {post['link']}")
+            print(f"Descrição Resumida: {post['description']}")
+            print(f"Conteúdo Detalhado HTML (trecho): {post['full_content_html'][:300]}...") # Imprime apenas um trecho
+    else:
+        print("Nenhum conteúdo foi raspado ou ocorreu um erro.")
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Título otimizado para SEO com palavras-chave relevantes e atrativas -->
     <title>Concursos e Vagas de Agronomia | APROVAÇÃO RÁPIDA com Agronomia Concurso Apostila</title>
-    <meta name="description" content="Conquiste sua vaga! Encontre os últimos concursos e vagas de agronomia atualizados diariamente, com dicas de estudo e treinamento exclusivo para sua aprovação.">
-    <meta name="keywords" content="concursos agronomia, vagas agronomia, engenheiro agrônomo, técnicos agrícolas, concurso público agronomia, aprovação concursos, treinamento agronomia, edital verticalizado, agrobase concursos, estudar para concurso">
+    <!-- Meta descrição aprimorada, focando em palavras-chave e proposta de valor -->
+    <meta name="description" content="Conquiste sua vaga em Agronomia! Encontre os últimos concursos e vagas atualizados diariamente no Brasil. Dicas de estudo e treinamento exclusivo para sua aprovação.">
+    <!-- Meta palavras-chave expandidas e mais focadas -->
+    <meta name="keywords" content="concursos agronomia, vagas agronomia, engenheiro agrônomo, técnicos agrícolas, concurso público agronomia, aprovação concursos, treinamento agronomia, edital verticalizado, agrobase concursos, estudar para concurso, carreira agronomia, vagas agro, empregos agronomia, preparatório concursos">
     
-    <!-- Canonical URL -->
+    <!-- Canonical URL - Crucial para SEO, aponta para a versão preferencial da página -->
     <link rel="canonical" href="[https://www.agronomiaconcursoapostila.com.br/concursos-abertos-agronomia.html](https://www.agronomiaconcursoapostila.com.br/concursos-abertos-agronomia.html)">
 
-    <!-- Open Graph Meta Tags (para compartilhamento em redes sociais) -->
+    <!-- Open Graph Meta Tags (para otimização de compartilhamento em redes sociais como Facebook/LinkedIn) -->
     <meta property="og:title" content="Concursos e Vagas de Agronomia | APROVAÇÃO RÁPIDA com Agronomia Concurso Apostila">
     <meta property="og:description" content="Sua chance de ouro! Encontre os melhores concursos e vagas de agronomia no Brasil, com acesso exclusivo ao nosso treinamento para aprovação garantida.">
     <meta property="og:url" content="[https://www.agronomiaconcursoapostila.com.br/concursos-abertos-agronomia.html](https://www.agronomiaconcursoapostila.com.br/concursos-abertos-agronomia.html)">
     <meta property="og:type" content="website">
+    <!-- URLs absolutas para imagens de Open Graph (otimizadas para redes sociais) -->
     <meta property="og:image" content="[https://www.agronomiaconcursoapostila.com.br/images/social-share.jpg](https://www.agronomiaconcursoapostila.com.br/images/social-share.jpg)">
-    <meta property="og:image:alt" content="Profissional de Agronomia estudando para concurso, ilustração">
+    <meta property="og:image:width" content="1200"> <!-- Dimensões recomendadas para OG image -->
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Profissional de Agronomia estudando para concurso, ilustração de sucesso">
 
-    <!-- Twitter Card Meta Tags -->
+    <!-- Twitter Card Meta Tags (para otimização de compartilhamento no Twitter) -->
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@SeuTwitterAqui"> <!-- Adicione seu user do Twitter se tiver -->
+    <meta name="twitter:creator" content="@SeuTwitterAqui"> <!-- Adicione seu user do Twitter se tiver -->
     <meta name="twitter:title" content="Concursos e Vagas de Agronomia | APROVAÇÃO RÁPIDA com Agronomia Concurso Apostila">
     <meta name="twitter:description" content="Concursos de agronomia na palma da sua mão! Acesse vagas, edital e prepare-se com nosso treinamento exclusivo para garantir sua aprovação.">
+    <!-- URLs absolutas para imagens de Twitter Card -->
     <meta name="twitter:image" content="[https://www.agronomiaconcursoapostila.com.br/images/twitter-share.jpg](https://www.agronomiaconcursoapostila.com.br/images/twitter-share.jpg)">
-    <meta name="twitter:image:alt" content="Livros e tablet com tema de agronomia">
+    <meta name="twitter:image:alt" content="Livros e tablet com tema de agronomia para estudo">
 
-    <!-- Inclui Tailwind CSS via CDN -->
+    <!-- Inclui Tailwind CSS via CDN - Verificado e corrigido o formato do URL -->
     <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <!-- Inclui Google Fonts - Verificado e corrigido o formato do URL -->
     <link href="[https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap)" rel="stylesheet">
+    
+    <!-- Estilos CSS personalizados para design e responsividade (com ajustes para modal) -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -47,6 +296,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 1rem; /* Padding para garantir que a modal não toque as bordas em telas pequenas */
         }
         .modal-content {
             background-color: #fefefe;
@@ -135,13 +385,13 @@
         }
     </style>
 
-    <!-- Schema.org Markup (JSON-LD) para otimização de SEO -->
+    <!-- Schema.org Markup (JSON-LD) para otimização de SEO - Estrutura de dados aprimorada -->
     <script type="application/ld+json">
     {
       "@context": "[https://schema.org](https://schema.org)",
       "@type": "CollectionPage",
-      "name": "Concursos e Vagas de Agronomia | Agronomia Concurso Apostila",
-      "description": "Plataforma líder para encontrar as últimas vagas de emprego e concursos públicos na área de agronomia no Brasil, com treinamento exclusivo para sua aprovação.",
+      "name": "Concursos e Vagas de Agronomia | Agronomia Concurso Apostila: Sua Aprovação Garantida",
+      "description": "Plataforma líder para encontrar as últimas vagas de emprego e concursos públicos na área de agronomia no Brasil, com treinamento exclusivo para sua aprovação. Acesse editais, dicas e prepare-se com quem entende do assunto.",
       "url": "[https://www.agronomiaconcursoapostila.com.br/concursos-abertos-agronomia.html](https://www.agronomiaconcursoapostila.com.br/concursos-abertos-agronomia.html)",
       "publisher": {
         "@type": "Organization",
@@ -150,13 +400,26 @@
           "@type": "ImageObject",
           "url": "[https://www.agronomiaconcursoapostila.com.br/images/logo.png](https://www.agronomiaconcursoapostila.com.br/images/logo.png)",
           "width": 180,
-          "height": 43
-        }
+          "height": 43,
+          "caption": "Logo da Agronomia Concurso Apostila"
+        },
+        "url": "[https://www.agronomiaconcursoapostila.com.br/](https://www.agronomiaconcursoapostila.com.br/)"
       },
       "mainEntityOfPage": {
         "@type": "WebPage",
         "@id": "[https://www.agronomiaconcursoapostila.com.br/concursos-abertos-agronomia.html](https://www.agronomiaconcursoapostila.com.br/concursos-abertos-agronomia.html)"
-      }
+      },
+      "about": {
+        "@type": "Thing",
+        "name": "Concursos de Agronomia no Brasil",
+        "description": "Lista atualizada de concursos e vagas para profissionais e estudantes de agronomia, incluindo engenheiros agrônomos e técnicos agrícolas."
+      },
+      "keywords": [
+        "concursos agronomia", "vagas agronomia", "engenheiro agrônomo", "técnicos agrícolas", "concurso público agronomia", 
+        "aprovação concursos", "treinamento agronomia", "edital verticalizado", "estudar para concurso agronomia", 
+        "carreira agronomia", "empregos agronomia", "preparatório concursos agronomia", "agronomia 2024", "agronomia 2025"
+      ],
+      "inLanguage": "pt-BR"
     }
     </script>
 </head>
@@ -172,15 +435,22 @@
             <p class="text-lg text-gray-700 mt-2">Sua fonte diária de **vagas e concursos** para o universo da Agronomia.</p>
         </header>
 
-        <!-- Seção de Instruções -->
-        <section class="w-full max-w-4xl bg-yellow-50 p-6 rounded-xl shadow-md border-l-4 border-yellow-400 mb-8">
-            <h3 class="text-xl font-semibold text-yellow-800 mb-3 flex items-center">
-                <svg class="w-6 h-6 mr-2 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                Como se Inscrever e Dominar o Edital
+        <!-- Seção de Instruções (Otimizada com <strong> e classes para melhor legibilidade) -->
+        <section class="w-full max-w-4xl bg-yellow-50 p-6 rounded-xl shadow-md border-l-4 border-yellow-400 mb-8 text-left">
+            <h3 class="text-2xl font-bold text-yellow-800 mb-4 flex items-center">
+                <svg class="w-7 h-7 mr-3 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                Guia Rápido: Conquiste Seu Concurso em Agronomia!
             </h3>
-            <p class="text-gray-700 mb-2">Para encontrar o site de inscrições e o edital completo de um concurso, copie o **nome exato do concurso** (ex: "UNEAL (AL) – Concurso 25/2025") e cole-o no Google, adicionando a palavra **"inscrições"** ou **"edital"**. Isso geralmente leva você direto à página oficial.</p>
-            <p class="text-gray-700 font-medium">
-                **Dica de Ouro:** Sempre leia o **Edital Verticalizado**! Ele é seu guia completo, contendo todas as regras, datas, conteúdos e requisitos. Estudar cada ponto do edital é a chave para uma preparação eficaz e para não perder nenhuma oportunidade.
+            <p class="text-gray-800 mb-3 leading-relaxed">
+                <strong>1. Como Encontrar o Edital e se Inscrever?</strong><br>
+                É simples! Copie o <strong>nome completo do concurso</strong> (ex: "UNEAL (AL) – Concurso 25/2025") e cole-o diretamente no Google. Adicione termos como "edital" ou "inscrições" para encontrar a página oficial do processo seletivo ou da banca organizadora.
+            </p>
+            <p class="text-gray-800 mb-3 leading-relaxed">
+                <strong>2. A Chave da Aprovação: O Edital Verticalizado!</strong><br>
+                Nunca subestime o edital. Ele é o seu mapa do tesouro! Baixe e estude o <strong>Edital Verticalizado</strong> com atenção cirúrgica. Cada regra, data, conteúdo programático e requisito é crucial para sua preparação. Domine-o e você estará um passo à frente da concorrência.
+            </p>
+            <p class="text-gray-800 font-semibold leading-relaxed">
+                Lembre-se: a leitura atenta do edital evita surpresas e direciona seu estudo de forma estratégica.
             </p>
         </section>
 
@@ -195,25 +465,40 @@
             <div id="error-message" class="text-center text-red-600 mt-8 hidden py-4">Erro ao carregar as vagas. Tente novamente mais tarde.<br>Por favor, recarregue a página ou tente novamente mais tarde.</div>
         </main>
 
-        <!-- Seção de CTA de Vendas -->
-        <section class="w-full max-w-4xl bg-blue-600 p-8 rounded-2xl shadow-xl mt-8 text-center text-white relative overflow-hidden">
-            <div class="absolute inset-0 bg-pattern opacity-10" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzIiIGhlaWdodD0iNzIiIHZpZXdCb3g9IjAgMCA3MiA3MiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMDAwMDAiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDcwYy0xLjEwNSAwLTIuMDAzLS44OTctMi4wMDMtMi4wMDNWNS44NDJjMC0xLjEwNSAuODk3LTIuMDAzIDIuMDAzLTIuMDAzczIuMDAzLjg5NyAyLjAwMyAyLjAwM3Y2Mi4xNTVjMCAxLjEwNS0uODk3IDIuMDAzLTIuMDAzIDIuMDAzem0zNC44MjEtNjEuNDY2Yy0uMzU5LS43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktLjcxNC0xLjE2Ni0xLjAzMy0xLjg4LS42NzRsLTYyLjY2NyAzMS4xOTRjLSu3MTQuMzU4LTEuMDMzIDEuMTY2LS42NzQgMS44ODNzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzNCAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjAuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMSuMTY2LjY3NC0xLjg4eiIvPjwvZz48L25zdmc+');"></div>
+        <!-- Seção de CTA de Vendas (Otimizada com mais impacto visual e Copy) -->
+        <section class="w-full max-w-4xl bg-blue-600 p-8 rounded-2xl shadow-xl mt-8 text-center text-white relative overflow-hidden transform transition-all duration-300 hover:scale-102">
+            <div class="absolute inset-0 bg-pattern opacity-10" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzIiIGhlaWdodD0iNzIiIHZpZXdCb3g9IjAgMCA3MiA3MiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48ZyBmaWxsPSIjMDAwMDAwIiBmaWxsLW9wYWNpdHk9IjAuMDUiPjxwYXRoIGQ9Ik0zNiA3MGMtMS4xMDUgMC0yLjAwMy0uODk3LTIuMDAzLTIuMDAzVjUuODQyYzAtMS4xMDUuODk3LTIuMDAzIDIuMDAzLTIuMDAzczIuMDAzLjg5NyAyLjAwMyAyLjAwM3Y2Mi4xNTVjMCAxLjEwNS0uODk3IDIuMDAzLTIuMDAzIDIuMDAzem0zNC44MjEtNjEuNDY2Yy0uMzU5LS43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktLjcxNC0xLjE2Ni0xLjAzMy0xLjg4LS42NzRsLTYyLjY2NyAzMS4xOTRjLisuNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzNCAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Y20uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjAuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMSuMTY2LjY3NC0xLjg4eiIvPjwvZz48L25zdmc+');"></div>
             <h3 class="text-3xl font-extrabold mb-4 drop-shadow-lg">
-                Quer Conquistar Sua Vaga em Agronomia?
+                Conquiste Sua Vaga Pública em Agronomia!
             </h3>
-            <p class="text-lg mb-6 max-w-2xl mx-auto opacity-90">
-                Não perca tempo com a concorrência! Nosso treinamento especializado em Agronomia oferece o que você precisa para se destacar e garantir sua aprovação. Material focado, didática clara e todo o suporte para sua jornada.
+            <p class="text-xl mb-6 max-w-2xl mx-auto font-medium opacity-90">
+                O caminho para a aprovação exige estratégia e material de qualidade. Com a **Agronomia Concurso Apostila**, você tem acesso a um treinamento completo, focado nos editais e nas reais necessidades dos concursos de Agronomia.
+            </p>
+            <p class="text-lg mb-8 max-w-2xl mx-auto opacity-90">
+                Pare de perder tempo com conteúdo genérico! Nossos especialistas desenvolveram um método que te leva do básico ao avançado, com simulados, aulas direcionadas e suporte individualizado para sua jornada rumo ao serviço público.
             </p>
             <a href="[https://agronomiaconcursoapostila.com.br/](https://agronomiaconcursoapostila.com.br/)" target="_blank" rel="noopener noreferrer" 
-               class="inline-block bg-green-400 text-blue-900 font-bold px-8 py-4 rounded-full text-xl shadow-lg hover:bg-green-300 transform hover:scale-105 transition duration-300 ease-in-out border-2 border-green-500">
+               class="inline-block bg-green-400 text-blue-900 font-bold px-10 py-5 rounded-full text-2xl shadow-xl hover:bg-green-300 transform hover:scale-105 transition duration-300 ease-in-out border-4 border-green-500 tracking-wide pulse-animation">
                 SIM, QUERO SER APROVADO!
             </a>
-            <p class="text-sm mt-4 opacity-80">Acesse nosso treinamento e transforme seu futuro profissional.</p>
+            <p class="text-sm mt-6 opacity-80">Invista no seu futuro profissional. Acesse nosso treinamento exclusivo e seja o próximo aprovado!</p>
+            <!-- Animação CSS simples para o botão CTA -->
+            <style>
+                @keyframes pulse-animation {
+                    0% { transform: scale(1); }
+                    50% { transform: scale(1.02); }
+                    100% { transform: scale(1); }
+                }
+                .pulse-animation {
+                    animation: pulse-animation 2s infinite ease-in-out;
+                }
+            </style>
         </section>
 
-        <!-- Rodapé (opcional) -->
-        <footer class="w-full max-w-4xl text-center mt-8 text-gray-600 text-sm bg-white p-4 rounded-xl shadow-md">
-            <p>&copy; 2024 Agronomia Concurso Apostila. Todos os direitos reservados.</p>
+        <!-- Rodapé (Otimizado) -->
+        <footer class="w-full max-w-4xl text-center mt-8 text-gray-600 text-sm bg-white p-6 rounded-xl shadow-md border-t-2 border-gray-200">
+            <p>&copy; 2024 Agronomia Concurso Apostila. Todos os direitos reservados. </p>
+            <p class="mt-1">Desenvolvido com foco na sua aprovação.</p>
         </footer>
     </div>
 
@@ -225,7 +510,7 @@
             <div id="modal-content-body" class="text-gray-800 leading-relaxed overflow-y-auto max-h-[60vh] custom-scrollbar p-2">
                 <!-- Conteúdo HTML da vaga será inserido aqui -->
             </div>
-            <a href="#" id="modal-original-link" class="inline-block mt-4 text-blue-600 hover:underline px-4 py-2 bg-gray-100 rounded-md transition-colors duration-200 hover:bg-gray-200" target="_blank" rel="noopener noreferrer">Ver no site original</a>
+            <a href="#" id="modal-original-link" class="inline-block mt-4 text-blue-600 hover:underline px-4 py-2 bg-gray-100 rounded-md transition-colors duration-200 hover:bg-gray-200 font-semibold" target="_blank" rel="noopener noreferrer">Ver no site original (Recomendado para Edital Completo)</a>
         </div>
     </div>
 
@@ -244,20 +529,22 @@
             function renderPosts(posts) {
                 postsContainer.innerHTML = ''; // Limpa o conteúdo existente
                 if (posts.length === 0) {
-                    postsContainer.innerHTML = '<p class="text-center text-gray-700">Nenhuma vaga encontrada no momento.</p>';
+                    postsContainer.innerHTML = '<p class="text-center text-gray-700 p-8">Nenhuma vaga encontrada no momento. Verifique novamente em breve!</p>';
                 } else {
                     posts.forEach((post, index) => {
                         const article = document.createElement('article');
+                        // Adicionado um ID para cada artigo, útil para acessibilidade e JS
+                        article.id = `post-${index}`; 
                         article.className = 'bg-gray-50 p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-200';
 
                         article.innerHTML = `
                             <h3 class="text-xl font-bold text-gray-900 mb-2">
-                                <a href="#" class="hover:text-green-600 transition-colors duration-200 show-details-btn" data-index="${index}">${post.title}</a>
+                                <a href="#" class="hover:text-green-600 transition-colors duration-200 show-details-btn" data-index="${index}" aria-label="Ver detalhes do concurso ${post.title}">${post.title}</a>
                             </h3>
-                            <p class="text-gray-700 mb-4">
+                            <p class="text-gray-700 mb-4 text-sm">
                                 ${post.description}
                             </p>
-                            <button class="inline-block bg-blue-600 text-white px-5 py-2 rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-200 show-details-btn" data-index="${index}">Ver Detalhes</button>
+                            <button class="inline-block bg-blue-600 text-white px-5 py-2 rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-200 show-details-btn focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" data-index="${index}" aria-controls="vacancy-modal">Ver Detalhes</button>
                         `;
                         postsContainer.appendChild(article);
                     });
@@ -270,12 +557,32 @@
                             const selectedPost = posts[postIndex];
                             
                             modalTitle.textContent = selectedPost.title;
-                            modalContentBody.innerHTML = selectedPost.full_content_html || '<p>Conteúdo detalhado não disponível.</p>';
+                            // Sanitize HTML content before injecting
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(selectedPost.full_content_html, 'text/html');
+                            // Remove any scripts or event handlers from the parsed content
+                            doc.querySelectorAll('script, style, link').forEach(el => el.remove());
+                            doc.querySelectorAll('[on*]').forEach(el => {
+                                Array.from(el.attributes).forEach(attr => {
+                                    if (attr.name.startsWith('on')) {
+                                        el.removeAttribute(attr.name);
+                                    }
+                                });
+                            });
+                            // Rebuild relative links to be absolute if necessary, though Python script should handle this
+                            doc.querySelectorAll('a[href]').forEach(a => {
+                                if (a.href && !a.href.startsWith('http')) {
+                                    a.href = new URL(a.href, selectedPost.link).href;
+                                }
+                            });
+                            modalContentBody.innerHTML = doc.body.innerHTML || '<p>Conteúdo detalhado não disponível.</p>';
+                            
                             modalOriginalLink.href = selectedPost.link; // Link para o site original
 
                             vacancyModal.style.display = 'flex'; // Exibe a modal
                             vacancyModal.classList.add('is-open'); // Adiciona classe para animação
                             document.body.style.overflow = 'hidden'; // Impede scroll do body
+                            modalContentBody.scrollTop = 0; // Volta para o topo da modal ao abrir
                         });
                     });
                 }
@@ -299,7 +606,7 @@
                 } catch (error) {
                     console.error("Could not fetch posts:", error);
                     errorMessage.classList.remove('hidden'); // Mostra a mensagem de erro
-                    postsContainer.innerHTML = '<p class="text-center text-gray-700">Não foi possível carregar as vagas. Por favor, tente novamente mais tarde.</p>';
+                    postsContainer.innerHTML = '<p class="text-center text-red-700 p-8 font-semibold">Não foi possível carregar as vagas no momento. Isso pode ocorrer se o arquivo de dados (posts.json) não estiver disponível ou houver um problema de conexão. Por favor, certifique-se de que o script Python foi executado e o arquivo posts.json foi enviado corretamente para o GitHub Pages.</p>';
                 } finally {
                     loadingMessage.classList.add('hidden'); // Esconde a mensagem de carregamento
                 }

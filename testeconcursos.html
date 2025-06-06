@@ -35,104 +35,6 @@
             font-family: 'Inter', sans-serif;
             background-color: #f3f4f6; /* Cor de fundo suave */
         }
-        .modal {
-            display: none; 
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.6);
-            justify-content: center;
-            align-items: center;
-            padding: 1rem;
-        }
-        .modal.is-open {
-            display: flex;
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: auto;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
-            width: 90%;
-            max-width: 900px;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            transform: scale(0.9);
-            opacity: 0;
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-        .modal.is-open .modal-content {
-            transform: scale(1);
-            opacity: 1;
-        }
-        .close-button {
-            color: #777;
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            font-size: 38px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: color 0.2s ease-in-out;
-        }
-        .close-button:hover,
-        .close-button:focus {
-            color: #333;
-            text-decoration: none;
-        }
-        .modal-content-body {
-            font-size: 1.05rem;
-            line-height: 1.7;
-            color: #333;
-        }
-        .modal-content-body img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-            margin: 1.5rem 0;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .modal-content-body table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1.5rem 0;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        .modal-content-body th, .modal-content-body td {
-            border: 1px solid #cbd5e0;
-            padding: 1rem;
-            text-align: left;
-        }
-        .modal-content-body th {
-            background-color: #e2e8f0;
-            font-weight: 700;
-            color: #2d3748;
-        }
-        .modal-content-body tr:nth-child(even) {
-            background-color: #f0f4f8;
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
     </style>
 
     <!-- Schema.org Markup (JSON-LD) para SEO -->
@@ -197,7 +99,7 @@
             </h3>
             <p class="text-gray-800 mb-3 leading-relaxed">
                 <strong>1. Como Encontrar o Edital?</strong><br>
-                Clique em <strong>"Pesquisar Edital no Google →"</strong> para buscar o edital e a página de inscrição da banca organizadora.
+                Clique em <strong>"Pesquisar Edital →"</strong> para buscar o edital e a página de inscrição da banca organizadora.
             </p>
             <p class="text-gray-800 mb-3 leading-relaxed">
                 <strong>2. A Chave da Aprovação: O Edital Verticalizado!</strong><br>
@@ -292,28 +194,13 @@
         </footer>
     </div>
 
-    <!-- Modal para detalhes da vaga -->
-    <div id="vacancy-modal" class="modal">
-        <div class="modal-content custom-scrollbar">
-            <span class="close-button">&times;</span>
-            <h3 class="text-2xl font-bold text-gray-900 mb-4" id="modal-title"></h3>
-            <div id="modal-content-body" class="text-gray-800 leading-relaxed max-h-[60vh] p-2">
-                <!-- Conteúdo da vaga aqui -->
-            </div>
-            <a href="#" id="modal-original-link" class="inline-block mt-4 text-blue-600 hover:underline px-4 py-2 bg-gray-100 rounded-md transition-colors duration-200 font-semibold" target="_blank" rel="noopener noreferrer">Ver no site original (Recomendado)</a>
-        </div>
-    </div>
+    <!-- O Modal foi removido para simplificar o código -->
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const postsContainer = document.getElementById('posts-container');
             const loadingMessage = document.getElementById('loading-message');
             const errorMessage = document.getElementById('error-message');
-            const vacancyModal = document.getElementById('vacancy-modal');
-            const closeButton = vacancyModal.querySelector('.close-button');
-            const modalTitle = document.getElementById('modal-title');
-            const modalContentBody = document.getElementById('modal-content-body');
-            const modalOriginalLink = document.getElementById('modal-original-link');
 
             // Função para renderizar os posts
             function renderPosts(posts) {
@@ -334,7 +221,7 @@
                     article.innerHTML = `
                         <div>
                             <h3 class="text-xl font-bold text-gray-900 mb-2">
-                                <a href="#" class="hover:text-green-600 transition-colors duration-200 open-modal-btn" data-index="${index}" aria-label="Ver detalhes do concurso ${post.title}">${post.title}</a>
+                                ${post.title}
                             </h3>
                             <p class="text-gray-700 mb-4 text-sm">
                                 ${post.description}
@@ -342,45 +229,12 @@
                         </div>
                         <div class="mt-4">
                             <a href="${searchUrl}" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-semibold hover:underline">
-                                Pesquisar Edital no Google &rarr;
+                                Pesquisar Edital &rarr;
                             </a>
                         </div>
                     `;
                     postsContainer.appendChild(article);
                 });
-
-                // Listeners para abrir o modal
-                document.querySelectorAll('.open-modal-btn').forEach(button => {
-                    button.addEventListener('click', (event) => {
-                        event.preventDefault();
-                        const postIndex = event.currentTarget.dataset.index;
-                        const selectedPost = posts[postIndex];
-                        
-                        modalTitle.textContent = selectedPost.title;
-                        
-                        const parser = new DOMParser();
-                        const doc = parser.parseFromString(selectedPost.full_content_html, 'text/html');
-                        doc.querySelectorAll('script, style, link').forEach(el => el.remove());
-                        doc.querySelectorAll('[on*]').forEach(el => {
-                            Array.from(el.attributes).forEach(attr => {
-                                if (attr.name.startsWith('on')) el.removeAttribute(attr.name);
-                            });
-                        });
-                        
-                        modalContentBody.innerHTML = doc.body.innerHTML || '<p>Conteúdo detalhado não disponível.</p>';
-                        modalOriginalLink.href = selectedPost.link;
-
-                        vacancyModal.classList.add('is-open');
-                        document.body.style.overflow = 'hidden';
-                        modalContentBody.scrollTop = 0;
-                    });
-                });
-            }
-
-            // Função para fechar o modal
-            function closeModal() {
-                vacancyModal.classList.remove('is-open');
-                document.body.style.overflow = '';
             }
 
             // Função para buscar os posts do JSON
@@ -404,12 +258,6 @@
                 }
             }
             
-            // Event listeners
-            closeButton.addEventListener('click', closeModal);
-            window.addEventListener('click', (event) => {
-                if (event.target === vacancyModal) closeModal();
-            });
-
             // Inicia a busca pelos posts
             fetchPosts();
         });

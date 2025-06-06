@@ -8,23 +8,21 @@
     <meta name="keywords" content="vagas agronomia, concursos agronomia, engenheiro agrônomo, técnico agrícola, agronomia, emprego agronomia, apostila agronomia, concurso público agronomia">
     
     <!-- Canonical URL -->
-    <link rel="canonical" href="[https://www.agronomiaconcursoapostila.com.br/](https://www.agronomiaconcursoapostila.com.br/)">
+    <link rel="canonical" href="[https://www.agronomiaconcursoapostila.com.br/concursos-abertos-agronomia.html](https://www.agronomiaconcursoapostila.com.br/concursos-abertos-agronomia.html)">
 
     <!-- Open Graph Meta Tags (para compartilhamento em redes sociais) -->
     <meta property="og:title" content="Concursos e Vagas de Agronomia | Agronomia Concurso Apostila">
     <meta property="og:description" content="As melhores vagas e concursos para agrônomos e técnicos agrícolas. Mantenha-se atualizado com as oportunidades no setor de agronomia.">
-    <meta property="og:url" content="[https://www.agronomiaconcursoapostila.com.br/](https://www.agronomiaconcursoapostila.com.br/)">
+    <meta property="og:url" content="[https://www.agronomiaconcursoapostila.com.br/concursos-abertos-agronomia.html](https://www.agronomiaconcursoapostila.com.br/concursos-abertos-agronomia.html)">
     <meta property="og:type" content="website">
-    <!-- Adicione uma imagem relevante para o Open Graph, se tiver uma: -->
-    <!-- <meta property="og:image" content="[https://www.agronomiaconcursoapostila.com.br/images/social-share.jpg](https://www.agronomiaconcursoapostila.com.br/images/social-share.jpg)"> -->
-    <!-- <meta property="og:image:alt" content="Ilustração de campos agrícolas ou profissional de agronomia"> -->
+    <meta property="og:image" content="[https://www.agronomiaconcursoapostila.com.br/images/social-share.jpg](https://www.agronomiaconcursoapostila.com.br/images/social-share.jpg)">
+    <meta property="og:image:alt" content="Ilustração de campos agrícolas ou profissional de agronomia">
 
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Concursos e Vagas de Agronomia | Agronomia Concurso Apostila">
     <meta name="twitter:description" content="As melhores vagas e concursos para agrônomos e técnicos agrícolas. Mantenha-se atualizado com as oportunidades no setor de agronomia.">
-    <!-- Adicione uma imagem relevante para o Twitter Card, se tiver uma: -->
-    <!-- <meta name="twitter:image" content="[https://www.agronomiaconcursoapostila.com.br/images/twitter-share.jpg](https://www.agronomiaconcursoapostila.com.br/images/twitter-share.jpg)"> -->
+    <meta name="twitter:image" content="[https://www.agronomiaconcursoapostila.com.br/images/twitter-share.jpg](https://www.agronomiaconcursoapostila.com.br/images/twitter-share.jpg)">
 
     <!-- Inclui Tailwind CSS via CDN -->
     <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
@@ -34,6 +32,89 @@
             font-family: 'Inter', sans-serif;
             background-color: #f3f4f6; /* Cor de fundo suave */
         }
+        /* Estilo para a modal */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border-radius: 12px; /* Mais arredondado */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Sombra mais forte */
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh; /* Limita a altura para ser scrollable */
+            overflow-y: auto; /* Habilita scroll interno */
+            position: relative;
+            transform: scale(0.95); /* Pequena animação ao abrir */
+            opacity: 0;
+            transition: all 0.3s ease-out; /* Transição suave */
+        }
+        .modal.is-open .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+        .close-button {
+            color: #888; /* Cor mais suave */
+            position: absolute;
+            top: 15px; /* Ajuste a posição */
+            right: 25px; /* Ajuste a posição */
+            font-size: 32px; /* Maior */
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s ease-in-out;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: #555; /* Escurece no hover */
+            text-decoration: none;
+        }
+        /* Estilos adicionais para o corpo da modal */
+        .modal-content-body {
+            font-size: 1rem; /* Tamanho da fonte padrão */
+            line-height: 1.6; /* Espaçamento de linha confortável */
+        }
+        /* Garante que imagens dentro do conteúdo raspado sejam responsivas */
+        .modal-content-body img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        /* Estilo para tabelas dentro do conteúdo raspado */
+        .modal-content-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            overflow: hidden; /* Garante que os cantos arredondados funcionem com bordas */
+        }
+        .modal-content-body th, .modal-content-body td {
+            border: 1px solid #e2e8f0; /* Cor da borda suave */
+            padding: 0.75rem;
+            text-align: left;
+        }
+        .modal-content-body th {
+            background-color: #e2e8f0;
+            font-weight: 600;
+        }
+        .modal-content-body tr:nth-child(even) {
+            background-color: #f7fafc;
+        }
+
     </style>
 
     <!-- Schema.org Markup (JSON-LD) para otimização de SEO -->
@@ -43,7 +124,7 @@
       "@type": "CollectionPage",
       "name": "Concursos e Vagas de Agronomia",
       "description": "Plataforma para encontrar as últimas vagas de emprego e concursos públicos na área de agronomia no Brasil.",
-      "url": "[https://www.agronomiaconcursoapostila.com.br/](https://www.agronomiaconcursoapostila.com.br/)",
+      "url": "[https://www.agronomiaconcursoapostila.com.br/concursos-abertos-agronomia.html](https://www.agronomiaconcursoapostila.com.br/concursos-abertos-agronomia.html)",
       "publisher": {
         "@type": "Organization",
         "name": "Agronomia Concurso Apostila",
@@ -56,32 +137,72 @@
     </script>
 </head>
 <body class="antialiased">
-    <div class="min-h-screen flex flex-col items-center py-8 px-4 sm:px-6 lg:px-8">
+    <div class="min-h-screen flex flex-col items-center py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-green-100 via-blue-100 to-green-200">
         <!-- Cabeçalho do Site -->
-        <header class="w-full max-w-4xl text-center mb-8">
-            <h1 class="text-4xl font-bold text-gray-900 mb-2 rounded-lg">
-                <span class="bg-gradient-to-r from-green-500 to-blue-500 text-white px-4 py-2 rounded-lg shadow-lg">
+        <header class="w-full max-w-4xl text-center mb-8 bg-white p-6 rounded-2xl shadow-xl border-b-4 border-blue-500">
+            <h1 class="text-4xl font-extrabold text-gray-900 mb-2 rounded-lg">
+                <span class="bg-gradient-to-r from-green-600 to-blue-600 text-white px-6 py-3 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300 inline-block">
                     Agronomia Concurso Apostila
                 </span>
             </h1>
-            <p class="text-lg text-gray-700">As últimas vagas e concursos para profissionais de Agronomia.</p>
+            <p class="text-lg text-gray-700 mt-2">Sua fonte diária de **vagas e concursos** para o universo da Agronomia.</p>
         </header>
 
+        <!-- Seção de Instruções -->
+        <section class="w-full max-w-4xl bg-yellow-50 p-6 rounded-xl shadow-md border-l-4 border-yellow-400 mb-8">
+            <h3 class="text-xl font-semibold text-yellow-800 mb-3 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                Como se Inscrever e Dominar o Edital
+            </h3>
+            <p class="text-gray-700 mb-2">Para encontrar o site de inscrições e o edital completo de um concurso, copie o **nome exato do concurso** (ex: "UNEAL (AL) – Concurso 25/2025") e cole-o no Google, adicionando a palavra **"inscrições"** ou **"edital"**. Isso geralmente leva você direto à página oficial.</p>
+            <p class="text-gray-700 font-medium">
+                **Dica de Ouro:** Sempre leia o **Edital Verticalizado**! Ele é seu guia completo, contendo todas as regras, datas, conteúdos e requisitos. Estudar cada ponto do edital é a chave para uma preparação eficaz e para não perder nenhuma oportunidade.
+            </p>
+        </section>
+
         <!-- Seção de Posts Raspados -->
-        <main class="w-full max-w-4xl bg-white p-6 rounded-xl shadow-lg">
-            <h2 class="text-3xl font-semibold text-gray-800 mb-6 border-b-2 border-green-500 pb-2">Últimas Vagas de Agronomia</h2>
+        <main class="w-full max-w-4xl bg-white p-6 rounded-xl shadow-lg border-t-4 border-green-500">
+            <h2 class="text-3xl font-semibold text-gray-800 mb-6 pb-2 border-b-2 border-green-500">Últimas Vagas de Agronomia</h2>
 
             <div id="posts-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
                 <!-- Posts serão carregados aqui dinamicamente -->
             </div>
-            <div id="loading-message" class="text-center text-gray-600 mt-8">Carregando vagas...</div>
-            <div id="error-message" class="text-center text-red-600 mt-8 hidden">Erro ao carregar as vagas. Tente novamente mais tarde.</div>
+            <div id="loading-message" class="text-center text-gray-600 mt-8 py-4">Carregando vagas... <span class="animate-pulse">...</span></div>
+            <div id="error-message" class="text-center text-red-600 mt-8 hidden py-4">Erro ao carregar as vagas. Tente novamente mais tarde.</div>
         </main>
 
+        <!-- Seção de CTA de Vendas -->
+        <section class="w-full max-w-4xl bg-blue-600 p-8 rounded-2xl shadow-xl mt-8 text-center text-white relative overflow-hidden">
+            <div class="absolute inset-0 bg-pattern opacity-10" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzIiIGhlaWdodD0iNzIiIHZpZXdCb3g9IjAgMCA3MiA3MiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMDAwMDAiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDcwYy0xLjEwNSAwLTIuMDAzLS44OTctMi4wMDMtMi4wMDNWNS44NDJjMC0xLjEwNSAuODk3LTIuMDAzIDIuMDAzLTIuMDAzczIuMDAzLjg5NyAyLjAwMyAyLjAwM3Y2Mi4xNTVjMCAxLjEwNS0uODk3IDIuMDAzLTIuMDAzIDIuMDAzem0zNC44MjEtNjEuNDY2Yy0uMzU5LS43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktLjcxNC0xLjE2Ni0xLjAzMy0xLjg4LS42NzRsLTYyLjY2NyAzMS4xOTRjLS43MTQuMzU4LTEuMDMzIDEuMTY2LS42NzQgMS44ODNzMS4xNjYgMS4wMzMgxLjg4LjY3NGw2Mi42NjctMzEuMTk0Yy43MTQtLjM1OCAxLjAzMy0xLjE2Ni42NzQtMS44OHptLTQuODM0IDEyLjI0NGMtLjM1OS0uNzE0LTEuMTY2LTEuMDMzLTEuODgtLjY3NGwtNjIuNjY3IDMxLjE5NGMtLjcxNC4zNTgtMS4wMzMgMS4xNjYtLjY3NCAxLjg4czEuMTY2IDEuMDMzIDEuODguNjc0bDYyLjY2Ny0zMS4xOTRjLjcxNC0uMzU4IDEuMDMzLTEuMTY2LjY3NC0xLjg4em0tNC44MzIgMTIuMjQ0Yy0uMzU5LS43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMSuMTY2LjY3NC0xLjg4eiIvPjwvZz48L25zdmc+');"></div>
+            <h3 class="text-3xl font-extrabold mb-4 drop-shadow-lg">
+                Quer Conquistar Sua Vaga em Agronomia?
+            </h3>
+            <p class="text-lg mb-6 max-w-2xl mx-auto opacity-90">
+                Não perca tempo com a concorrência! Nosso treinamento especializado em Agronomia oferece o que você precisa para se destacar e garantir sua aprovação. Material focado, didática clara e todo o suporte para sua jornada.
+            </p>
+            <a href="[https://agronomiaconcursoapostila.com.br/](https://agronomiaconcursoapostila.com.br/)" target="_blank" rel="noopener noreferrer" 
+               class="inline-block bg-green-400 text-blue-900 font-bold px-8 py-4 rounded-full text-xl shadow-lg hover:bg-green-300 transform hover:scale-105 transition duration-300 ease-in-out border-2 border-green-500">
+                SIM, QUERO SER APROVADO!
+            </a>
+            <p class="text-sm mt-4 opacity-80">Acesse nosso treinamento e transforme seu futuro profissional.</p>
+        </section>
+
         <!-- Rodapé (opcional) -->
-        <footer class="w-full max-w-4xl text-center mt-8 text-gray-600 text-sm">
+        <footer class="w-full max-w-4xl text-center mt-8 text-gray-600 text-sm bg-white p-4 rounded-xl shadow-md">
             <p>&copy; 2024 Agronomia Concurso Apostila. Todos os direitos reservados.</p>
         </footer>
+    </div>
+
+    <!-- Modal para exibir o conteúdo detalhado da vaga -->
+    <div id="vacancy-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3 class="text-2xl font-bold text-gray-900 mb-4" id="modal-title"></h3>
+            <div id="modal-content-body" class="text-gray-800 leading-relaxed overflow-y-auto max-h-[60vh] custom-scrollbar p-2">
+                <!-- Conteúdo HTML da vaga será inserido aqui -->
+            </div>
+            <a href="#" id="modal-original-link" class="inline-block mt-4 text-blue-600 hover:underline px-4 py-2 bg-gray-100 rounded-md transition-colors duration-200 hover:bg-gray-200" target="_blank" rel="noopener noreferrer">Ver no site original</a>
+        </div>
     </div>
 
     <script>
@@ -89,6 +210,11 @@
             const postsContainer = document.getElementById('posts-container');
             const loadingMessage = document.getElementById('loading-message');
             const errorMessage = document.getElementById('error-message');
+            const vacancyModal = document.getElementById('vacancy-modal');
+            const closeButton = document.querySelector('.close-button');
+            const modalTitle = document.getElementById('modal-title');
+            const modalContentBody = document.getElementById('modal-content-body');
+            const modalOriginalLink = document.getElementById('modal-original-link');
 
             // Função para renderizar os posts no HTML
             function renderPosts(posts) {
@@ -96,20 +222,37 @@
                 if (posts.length === 0) {
                     postsContainer.innerHTML = '<p class="text-center text-gray-700">Nenhuma vaga encontrada no momento.</p>';
                 } else {
-                    posts.forEach(post => {
+                    posts.forEach((post, index) => {
                         const article = document.createElement('article');
                         article.className = 'bg-gray-50 p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-200';
 
                         article.innerHTML = `
                             <h3 class="text-xl font-bold text-gray-900 mb-2">
-                                <a href="${post.link}" class="hover:text-green-600 transition-colors duration-200" target="_blank" rel="noopener noreferrer">${post.title}</a>
+                                <a href="#" class="hover:text-green-600 transition-colors duration-200 show-details-btn" data-index="${index}">${post.title}</a>
                             </h3>
                             <p class="text-gray-700 mb-4">
                                 ${post.description}
                             </p>
-                            <a href="${post.link}" class="inline-block bg-blue-600 text-white px-5 py-2 rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-200" target="_blank" rel="noopener noreferrer">Ver Detalhes</a>
+                            <button class="inline-block bg-blue-600 text-white px-5 py-2 rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-200 show-details-btn" data-index="${index}">Ver Detalhes</button>
                         `;
                         postsContainer.appendChild(article);
+                    });
+
+                    // Adiciona listeners aos botões "Ver Detalhes" (tanto no título quanto no botão)
+                    document.querySelectorAll('.show-details-btn').forEach(button => {
+                        button.addEventListener('click', (event) => {
+                            event.preventDefault(); // Impede o comportamento padrão do link
+                            const postIndex = event.target.dataset.index;
+                            const selectedPost = posts[postIndex];
+                            
+                            modalTitle.textContent = selectedPost.title;
+                            modalContentBody.innerHTML = selectedPost.full_content_html || '<p>Conteúdo detalhado não disponível.</p>';
+                            modalOriginalLink.href = selectedPost.link; // Link para o site original
+
+                            vacancyModal.style.display = 'flex'; // Exibe a modal
+                            vacancyModal.classList.add('is-open'); // Adiciona classe para animação
+                            document.body.style.overflow = 'hidden'; // Impede scroll do body
+                        });
                     });
                 }
             }
@@ -132,11 +275,27 @@
                 } catch (error) {
                     console.error("Could not fetch posts:", error);
                     errorMessage.classList.remove('hidden'); // Mostra a mensagem de erro
-                    postsContainer.innerHTML = ''; // Garante que nenhum post seja mostrado
+                    postsContainer.innerHTML = '<p class="text-center text-gray-700">Não foi possível carregar as vagas. Por favor, tente novamente mais tarde.</p>';
                 } finally {
                     loadingMessage.classList.add('hidden'); // Esconde a mensagem de carregamento
                 }
             }
+
+            // Event listener para fechar a modal
+            closeButton.addEventListener('click', () => {
+                vacancyModal.classList.remove('is-open'); // Remove classe para animação
+                vacancyModal.style.display = 'none'; // Esconde a modal (depois da transição, se houver)
+                document.body.style.overflow = ''; // Restaura scroll do body
+            });
+
+            // Fechar a modal clicando fora dela
+            window.addEventListener('click', (event) => {
+                if (event.target == vacancyModal) {
+                    vacancyModal.classList.remove('is-open'); // Remove classe para animação
+                    vacancyModal.style.display = 'none'; // Esconde a modal
+                    document.body.style.overflow = ''; // Restaura scroll do body
+                }
+            });
 
             fetchPosts(); // Chama a função para buscar e renderizar os posts ao carregar a página
         });

@@ -37,7 +37,8 @@
         }
         /* Estilo para a modal */
         .modal {
-            display: none; /* Hidden by default */
+            /* CORRIGIDO: display: none; como padrão */
+            display: none; 
             position: fixed; /* Stay in place */
             z-index: 1000; /* Sit on top */
             left: 0;
@@ -46,11 +47,15 @@
             height: 100%; /* Full height */
             overflow: auto; /* Enable scroll if needed */
             background-color: rgba(0,0,0,0.6); /* Black w/ more opacity */
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            justify-content: center; /* Mantém centralizado quando flex */
+            align-items: center; /* Mantém centralizado quando flex */
             padding: 1rem; /* Padding para garantir que a modal não toque as bordas em telas pequenas */
         }
+        /* Nova regra: apenas exibe a modal quando a classe 'is-open' está presente */
+        .modal.is-open {
+            display: flex;
+        }
+
         .modal-content {
             background-color: #fefefe;
             margin: auto;
@@ -220,7 +225,7 @@
 
         <!-- Seção de CTA de Vendas (Otimizada com mais impacto visual e Copy) -->
         <section class="w-full max-w-4xl bg-blue-600 p-8 rounded-2xl shadow-xl mt-8 text-center text-white relative overflow-hidden transform transition-all duration-300 hover:scale-102">
-            <div class="absolute inset-0 bg-pattern opacity-10" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzIiIGhlaWdodD0iNzIiIHZpZXdCb3g9IjAgMCA3MiA3MiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48ZyBmaWxsPSIjMDAwMDAwIiBmaWxsLW9wYWNpdHk9IjAuMDUiPjxwYXRoIGQ9Ik0zNiA3MGMtMS4xMDUgMC0yLjAwMy0uODk3LTIuMDAzLTIuMDAzVjUuODQyYzAtMS4xMDUuODk3LTIuMDAzIDIuMDAzLTIuMDAzczIuMDAzLjg5NyAyLjAwMyAyLjAwM3Y2Mi4xNTVjMCAxLjEwNS0uODk3IDIuMDAzLTIuMDAzIDIuMDAzem0zNC44MjEtNjEuNDY2Yy0uMzU5LS43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktLjcxNC0xLjE2Ni0xLjAzMy0xLjg4LS42NzRsLTYyLjY2NyAzMS4xOTRjLisuNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzNCAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTsgMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Y20uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjAuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMSuMTY2LjY3NC0xLjg4eiIvPjwvZz48L25zdmc+');"></div>
+            <div class="absolute inset-0 bg-pattern opacity-10" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzIiIGhlaWdodD0iNzIiIHZpZXdCb3g9IjAgMCA3MiA3MiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48ZyBmaWxsPSIjMDAwMDAwIiBmaWxsLW9wYWNpdHk9IjAuMDUiPjxwYXRoIGQ9Ik0zNiA3MGMtMS4xMDUgMC0yLjAwMy0uODk3LTIuMDAzLTIuMDAzVjUuODQyYzAtMS4xMDUuODk3LTIuMDAzIDIuMDAzLTIuMDAzczIuMDAzLjg5NyAyLjAwMyAyLjAwM3Y2Mi4xNTVjMCAxLjEwNS0uODk3IDIuMDAzLTIuMDAzIDIuMDAzem0zNC44MjEtNjEuNDY2Yy0uMzU5LS43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktLjczNS0xLjE2Ni0xLjA3Ni0xLjg4LS42NzRsLTYyLjY2NyAzMS4xOTRjLS43MTQuMzU4LTEuMDMzIDEuMTY2LS42NzQgMS44ODNzMS4xNjYgMS4wMzMgxLjg4LjY3NGw2Mi42NjctMzEuMTk0Yy43MTQtLjM1OCAxLjAzMy0xLjE2Ni42NzQtMS44OHptLTQuODM0IDEyLjI0NGMtLjM1OS0uNzE0LTEuMTY2LTEuMDMzLTEuODgtLjY3NGwtNjIuNjY3IDMxLjE5NGMtLjcxNC4zNTgtMS4wMzMgMS4xNjYtLjY3NCAxLjg4czEuMTY2IDEuMDMzIDEuODguNjc0bDYyLjY2Ny0zMS4xOTRjLjcxNC0uMzU4IDEuMDMzLTEuMTY2LjY3NC0xLjg4em0tNC44MzIgMTIuMjQ0Yy0uMzU5LS43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Y20uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjYuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMS4xNjAuNjc0LTEuODh6bS00LjgzMiAxMi4yNDRjLS4zNTktMC43MTQtMS4xNjYtMS4wMzMtMS44OC0uNjc0bC02Mi42NjcgMzEuMTk0Yy0uNzE0LjM1OC0xLjAzMyAxLjE2Ni0uNjc0IDEuODhzMS4xNjYgMS4wMzMgMS44OC42NzRsNjIuNjY3LTMxLjE5NGMuNzE0LS4zNTggMS4wMzMtMSuMTY2LjY3NC0xLjg4eiIvPjwvZz48L25zdmc+');"></div>
             <h3 class="text-3xl font-extrabold mb-4 drop-shadow-lg">
                 Conquiste Sua Vaga Pública em Agronomia!
             </h3>

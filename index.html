@@ -25,19 +25,48 @@
     <meta name="twitter:image" content="https://i.imgur.com/VrbDyOy.jpeg">  
     <meta name="twitter:image:alt" content="Capas das Apostilas de Agronomia para Concurso de Felipe Menegate">
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- CSS crítico para evitar FOUC (Flash of Unstyled Content) e garantir o LCP -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #333; /* Definindo uma cor base para o texto */
+            background-color: #f3f4f6; /* Definindo uma cor base para o fundo (tailwind bg-gray-100) */
+            -webkit-font-smoothing: antialiased; /* Para antialiasing de fontes em WebKit */
+            -moz-osx-font-smoothing: grayscale; /* Para antialiasing de fontes em Firefox (macOS) */
         }
         .hero-bg {
-            /* MODIFICADO: Adicionado '?text=%20' para remover o texto da imagem de placeholder */
             background-image: linear-gradient(rgba(20, 80, 30, 0.75), rgba(10, 40, 15, 0.85)), url('https://placehold.co/1920x1080/228B22/228B22?text=Concurso Publico');
             background-size: cover;
             background-position: center;
         }
+        /* Estilos básicos para o LCP (h1 na hero-bg) para garantir que ele apareça rápido */
+        .hero-bg h1 {
+            font-size: 2.25rem; /* text-4xl */
+            line-height: 1.25; /* leading-tight */
+            font-weight: 800; /* font-extrabold */
+            margin-bottom: 1.5rem; /* mb-6 */
+            color: white;
+            text-align: center;
+        }
+        .hero-bg h1 .block {
+            display: block;
+            color: #facc15; /* text-yellow-400 */
+        }
+        /* Adicione aqui qualquer outro estilo crítico que afete a renderização inicial */
+    </style>
+
+    <!-- Preload para Google Fonts e Font Awesome (carregamento assíncrono) -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"></noscript>
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"></noscript>
+
+    <!-- Estilos CSS do Tailwind que não são críticos para a primeira dobra, mas importantes para o layout geral -->
+    <!-- Os estilos específicos de hover e card-hover, testimonial-card, etc., podem ser definidos aqui -->
+    <!-- Para otimização máxima, use um build tool para purgar e inline o CSS do Tailwind -->
+    <style>
         .card-hover:hover {
             transform: translateY(-8px);
             box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.1), 0 6px 10px -4px rgba(0, 0, 0, 0.08);
@@ -85,7 +114,7 @@
             </h2>
             <div class="flex flex-col md:flex-row items-center bg-gray-50 p-8 rounded-lg shadow-xl">
                 <div class="md:w-1/3 text-center md:text-left mb-6 md:mb-0">
-                    <img itemprop="image" src="https://i.imgur.com/UHryOuH.png" alt="Foto de Felipe Menegate Nascimento, autor das apostilas de agronomia e aprovado em 1º lugar" class="rounded-full w-48 h-48 md:w-64 md:h-64 mx-auto md:mx-0 shadow-md mb-4 border-4 border-yellow-400" onerror="this.onerror=null;this.src='https://placehold.co/256x256/cccccc/969696?text=Foto+Felipe+Menegate';">
+                    <img itemprop="image" src="https://i.imgur.com/UHryOuH.png" alt="Foto de Felipe Menegate Nascimento, autor das apostilas de agronomia e aprovado em 1º lugar" class="rounded-full w-48 h-48 md:w-64 md:h-64 mx-auto md:mx-0 shadow-md mb-4 border-4 border-yellow-400" width="256" height="256" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/256x256/cccccc/969696?text=Foto+Felipe+Menegate';">
                     <h3 class="text-2xl font-semibold text-gray-900" itemprop="name">Felipe Menegate Nascimento</h3>
                     <p class="text-gray-600" itemprop="jobTitle">Engenheiro Agrônomo e Especialista em Concursos</p>
                     <p class="text-gray-500" itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
@@ -180,7 +209,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div class="testimonial-card p-6 rounded-lg shadow-lg card-hover">
                     <div class="flex items-center mb-4">
-                        <img src="https://placehold.co/60x60/E0E7FF/4338CA?text=JA&font=Inter" alt="Foto de João A." class="w-12 h-12 rounded-full mr-4 border-2 border-green-500">
+                        <img src="https://placehold.co/60x60/E0E7FF/4338CA?text=JA&font=Inter" alt="Foto de João A." class="w-12 h-12 rounded-full mr-4 border-2 border-green-500" width="60" height="60" loading="lazy">
                         <div>
                             <h4 class="font-semibold text-gray-900">João A. - Aprovado</h4>
                             <p class="text-sm text-gray-500">Engenheiro Agrônomo</p>
@@ -193,7 +222,7 @@
                 </div>
                 <div class="testimonial-card p-6 rounded-lg shadow-lg card-hover">
                     <div class="flex items-center mb-4">
-                        <img src="https://placehold.co/60x60/DBEAFE/1D4ED8?text=MS&font=Inter" alt="Foto de Mariana S." class="w-12 h-12 rounded-full mr-4 border-2 border-green-500">
+                        <img src="https://placehold.co/60x60/DBEAFE/1D4ED8?text=MS&font=Inter" alt="Foto de Mariana S." class="w-12 h-12 rounded-full mr-4 border-2 border-green-500" width="60" height="60" loading="lazy">
                         <div>
                             <h4 class="font-semibold text-gray-900">Mariana S. - Concurseira Dedicada</h4>
                             <p class="text-sm text-gray-500">Estudante para Concursos</p>
@@ -206,7 +235,7 @@
                 </div>
                 <div class="testimonial-card p-6 rounded-lg shadow-lg card-hover">
                             <div class="flex items-center mb-4">
-                                <img src="https://placehold.co/60x60/D1FAE5/059669?text=CP&font=Inter" alt="Foto de Carlos P." class="w-12 h-12 rounded-full mr-4 border-2 border-green-500">
+                                <img src="https://placehold.co/60x60/D1FAE5/059669?text=CP&font=Inter" alt="Foto de Carlos P." class="w-12 h-12 rounded-full mr-4 border-2 border-green-500" width="60" height="60" loading="lazy">
                                 <div>
                                     <h4 class="font-semibold text-gray-900">Carlos P. - Aprovado Prefeitura</h4>
                                     <p class="text-sm text-gray-500">Fiscal Agropecuário</p>
@@ -282,7 +311,7 @@
                         </div>
                     </div>
                     <div>
-                        <img src="https://i.imgur.com/uCb4VgE.jpeg" alt="Capa da Apostila Nutrição Mineral de Plantas para Concursos de Agronomia" class="w-full h-56 object-contain rounded-md mb-4" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Nutrição+Mineral';">
+                        <img src="https://i.imgur.com/uCb4VgE.jpeg" alt="Capa da Apostila Nutrição Mineral de Plantas para Concursos de Agronomia" class="w-full h-56 object-contain rounded-md mb-4" width="160" height="224" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Nutrição+Mineral';">
                         <h3 class="text-xl font-semibold text-gray-900 mb-2">Nutrição Mineral de Plantas</h3>
                         <p class="text-gray-600 text-sm mb-4">Essencial para Engenheiros Agrônomos que buscam a excelência em concursos.</p>
                     </div>
@@ -339,7 +368,7 @@
                         </div>
                     </div>
                     <div>
-                        <img src="https://i.imgur.com/8yH2LB9.jpeg" alt="Capa da Apostila Fitopatologia para Concursos de Agronomia" class="w-full h-56 object-contain rounded-md mb-4" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Fitopatologia';">
+                        <img src="https://i.imgur.com/8yH2LB9.jpeg" alt="Capa da Apostila Fitopatologia para Concursos de Agronomia" class="w-full h-56 object-contain rounded-md mb-4" width="160" height="224" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Fitopatologia';">
                         <h3 class="text-xl font-semibold text-gray-900 mb-2">Fitopatologia para Concursos</h3>
                         <p class="text-gray-600 text-sm mb-4">Domine os conceitos de fitopatologia e destaque-se na prova de Engenharia Agronômica.</p>
                     </div>
@@ -396,7 +425,7 @@
                         </div>
                     </div>
                     <div>
-                        <img src="https://i.imgur.com/MOMRv8W.jpeg" alt="Capa da Apostila Agronomia para Concursos (Geral)" class="w-full h-56 object-contain rounded-md mb-4" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Agronomia+Geral';">
+                        <img src="https://i.imgur.com/MOMRv8W.jpeg" alt="Capa da Apostila Agronomia para Concursos (Geral)" class="w-full h-56 object-contain rounded-md mb-4" width="160" height="224" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Agronomia+Geral';">
                         <h3 class="text-xl font-semibold text-gray-900 mb-2">Topografia e outros</h3>
                         <p class="text-gray-600 text-sm mb-4">Topografia, Geoprocessamento, Sensoriamento Remoto, Florestas, Climatologia e mais.</p>
                     </div>
@@ -451,7 +480,7 @@
                         </div>
                     </div>
                     <div>
-                        <img src="https://i.imgur.com/MarIa2S.jpeg" alt="Capa da Apostila Horticultura para Concursos de Agronomia" class="w-full h-56 object-contain rounded-md mb-4" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Horticultura';">
+                        <img src="https://i.imgur.com/MarIa2S.jpeg" alt="Capa da Apostila Horticultura para Concursos de Agronomia" class="w-full h-56 object-contain rounded-md mb-4" width="160" height="224" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Horticultura';">
                         <h3 class="text-xl font-semibold text-gray-900 mb-2">Horticultura para Concursos</h3>
                         <p class="text-gray-600 text-sm mb-4">Zootecnia, Olericultura, Fruticultura e Técnicas de Cultivo para gabaritar.</p>
                     </div>
@@ -506,7 +535,7 @@
                         </div>
                     </div>
                     <div>
-                        <img src="https://i.imgur.com/qPmG8aM.jpeg" alt="Capa da Apostila Solos para Concursos de Agronomia" class="w-full h-56 object-contain rounded-md mb-4" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Solos';">
+                        <img src="https://i.imgur.com/qPmG8aM.jpeg" alt="Capa da Apostila Solos para Concursos de Agronomia" class="w-full h-56 object-contain rounded-md mb-4" width="160" height="224" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Solos';">
                         <h3 class="text-xl font-semibold text-gray-900 mb-2">Solos para Concursos Públicos</h3>
                         <p class="text-gray-600 text-sm mb-4">O guia definitivo sobre solos para Engenheiros Agrônomos concurseiros.</p>
                     </div>
@@ -561,7 +590,7 @@
                         </div>
                     </div>
                     <div>
-                        <img src="https://i.imgur.com/5nP9DtT.jpeg" alt="Capa da Apostila Entomologia Agrícola para Concursos" class="w-full h-56 object-contain rounded-md mb-4" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Entomologia';">
+                        <img src="https://i.imgur.com/5nP9DtT.jpeg" alt="Capa da Apostila Entomologia Agrícola para Concursos" class="w-full h-56 object-contain rounded-md mb-4" width="160" height="224" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Entomologia';">
                         <h3 class="text-xl font-semibold text-gray-900 mb-2">Entomologia Agrícola</h3>
                         <p class="text-gray-600 text-sm mb-4">Prepare-se de forma completa em entomologia agrícola para os desafios dos concursos.</p>
                     </div>
@@ -616,7 +645,7 @@
                         </div>
                     </div>
                     <div>
-                        <img src="https://i.imgur.com/ajQjtCZ.jpeg" alt="Capa da Apostila Botânica, Agroecologia e Agricultura Orgânica" class="w-full h-56 object-contain rounded-md mb-4" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Botânica+e+Agroecologia';">
+                        <img src="https://i.imgur.com/ajQjtCZ.jpeg" alt="Capa da Apostila Botânica, Agroecologia e Agricultura Orgânica" class="w-full h-56 object-contain rounded-md mb-4" width="160" height="224" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Botânica+e+Agroecologia';">
                         <h3 class="text-xl font-semibold text-gray-900 mb-2">Botânica, Agroecologia e Agricultura Orgânica</h3>
                         <p class="text-gray-600 text-sm mb-4">Teoria integrada para concursos públicos de Agronomia.</p>
                     </div>
@@ -671,7 +700,7 @@
                         </div>
                     </div>
                     <div>
-                        <img src="https://i.imgur.com/gt0Wgdi.jpeg" alt="Capa da Apostila Adubação e Defensivos Agrícolas" class="w-full h-56 object-contain rounded-md mb-4" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Adubação+e+Defensivos';">
+                        <img src="https://i.imgur.com/gt0Wgdi.jpeg" alt="Capa da Apostila Adubação e Defensivos Agrícolas" class="w-full h-56 object-contain rounded-md mb-4" width="160" height="224" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Adubação+e+Defensivos';">
                         <h3 class="text-xl font-semibold text-gray-900 mb-2">Adubação e Defensivos Agrícolas</h3>
                         <p class="text-gray-600 text-sm mb-4">Adubação química, orgânica, verde, entomopatógenos e mecanismos de ação de herbicidas e inseticidas.</p>
                     </div>
@@ -726,7 +755,7 @@
                         </div>
                     </div>
                     <div>
-                        <img src="https://i.imgur.com/lRNOzVx.jpeg" alt="Capa da Apostila Mecanização Agrícola e Tecnologias de Produção" class="w-full h-56 object-contain rounded-md mb-4" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Mecanização';">
+                        <img src="https://i.imgur.com/lRNOzVx.jpeg" alt="Capa da Apostila Mecanização Agrícola e Tecnologias de Produção" class="w-full h-56 object-contain rounded-md mb-4" width="160" height="224" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Mecanização';">
                         <h3 class="text-xl font-semibold text-gray-900 mb-2">Agronomia: Mecanização e Tecnologias</h3>
                         <p class="text-gray-600 text-sm mb-4">Mecanização, tecnologias de produção, conservação de alimentos e sanidade vegetal.</p>
                     </div>
@@ -770,7 +799,7 @@
                         </div>
                         <div itemprop="shippingDetails" itemscope itemtype="https://schema.org/OfferShippingDetails">
                             <meta itemprop="shippingLabel" content="Entrega Digital Imediata">
-                            <div itemprop="shippingRate" itemscope itemtype="https://schema.org/MonetaryAmount">
+                            <div itemprop="shippingRate" itemscope itemtype="https://schema.org/MonetaryAmount"> <!-- O frete pode variar -->
                                 <meta itemprop="value" content="0">
                                 <meta itemprop="currency" content="BRL">
                             </div>
@@ -781,7 +810,7 @@
                         </div>
                     </div>
                     <div>
-                        <img src="https://i.imgur.com/VMnKSUl.jpeg" alt="Capa da Apostila Hidráulica, Irrigação e Políticas Agropecuárias" class="w-full h-56 object-contain rounded-md mb-4" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Hidráulica+e+Políticas';">
+                        <img src="https://i.imgur.com/VMnKSUl.jpeg" alt="Capa da Apostila Hidráulica, Irrigação e Políticas Agropecuárias" class="w-full h-56 object-contain rounded-md mb-4" width="160" height="224" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Hidráulica+e+Políticas';">
                         <h3 class="text-xl font-semibold text-gray-900 mb-2">Hidráulica, Irrigação e Políticas Agropecuárias</h3>
                         <p class="text-gray-600 text-sm mb-4">Hidráulica, irrigação, drenagem, paisagismo e políticas agropecuárias para concursos.</p>
                     </div>
@@ -821,7 +850,7 @@
                         </div>
                     </div>
                     <div>
-                        <img src="https://i.imgur.com/XRlVYT1.jpeg" alt="Capa da Apostila Zootecnia para Concursos de Agronomia" class="w-full h-56 object-contain rounded-md mb-4" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Zootecnia';">
+                        <img src="https://i.imgur.com/XRlVYT1.jpeg" alt="Capa da Apostila Zootecnia para Concursos de Agronomia" class="w-full h-56 object-contain rounded-md mb-4" width="160" height="224" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Zootecnia';">
                         <h3 class="text-xl font-semibold text-gray-900 mb-2">Zootecnia Completa</h3>
                         <p class="text-gray-600 text-sm mb-4">Bovinocultura, Capricultura, Apicultura, Forragicultura, Ensilagem e Avicultura.</p>
                     </div>
@@ -893,8 +922,7 @@
                         <div class="text-center mb-4">
                             <span class="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Oferta Mais Popular</span>
                         </div>
-                        <!-- Adicione a imagem aqui para o Pacote Diamante Digital -->
-                        <img src="https://m.media-amazon.com/images/I/61E6pYUbf9L._SL1000_.jpg" alt="Capa do Pacote Diamante Digital de 11 Apostilas de Agronomia" class="w-full h-56 object-contain rounded-md mb-4" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Pacote+Digital';">
+                        <img src="https://m.media-amazon.com/images/I/61E6pYUbf9L._SL1000_.jpg" alt="Capa do Pacote Diamante Digital de 11 Apostilas de Agronomia" class="w-full h-56 object-contain rounded-md mb-4" width="160" height="224" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Pacote+Digital';">
                         <h3 class="text-3xl font-extrabold text-green-700 mb-3 text-center">PACOTE DIAMANTE DIGITAL!</h3>
                         <p class="text-center text-gray-700 text-lg mb-1">Todas as 11 apostilas (PDF) + Bônus de 1500 Questões!</p>
                         <p class="text-center text-gray-500 text-sm mb-4 line-through">(Valor total: R$299,88)</p>
@@ -964,8 +992,7 @@
                         <div class="text-center mb-4">
                                <span class="bg-sky-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">NOVIDADE IMPRESSA!</span>
                         </div>
-                        <!-- Adicione a imagem aqui para o Pacote Ouro Impresso -->
-                        <img src="https://i.imgur.com/uwFvRYs.png" alt="Capa do Pacote Ouro Impresso de 11 Apostilas de Agronomia" class="w-full h-56 object-contain rounded-md mb-4" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Pacote+Impresso';">
+                        <img src="https://i.imgur.com/uwFvRYs.png" alt="Capa do Pacote Ouro Impresso de 11 Apostilas de Agronomia" class="w-full h-56 object-contain rounded-md mb-4" width="160" height="224" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Pacote+Impresso';">
                         <h3 class="text-3xl font-extrabold text-sky-700 mb-3 text-center">PACOTE OURO IMPRESSO!</h3>
                         <p class="text-center text-gray-700 text-lg mb-1">Todas as 11 apostilas IMPRESSAS + Bônus de 1500 Questões (Digital)!</p>
                                <p class="text-center text-gray-500 text-sm mb-4">Receba o conforto do material físico em casa.</p>
@@ -1037,10 +1064,9 @@
                     <div>
                         <h3 class="text-3xl font-extrabold text-blue-700 mb-3 text-center">MATERIAL BÔNUS DIGITAL!</h3>
                                <p class="text-center text-gray-700 text-lg mb-4">Turbine sua preparação com questões focadas e gabaritadas.</p>
-                        <!-- Adicione a imagem aqui para o Material Bônus Digital -->
-                        <img src="https://m.media-amazon.com/images/I/61cgL9cf6wL._SL1000_.jpg" alt="Capa do Material Bônus Digital de 1500 Questões" class="w-full h-56 object-contain rounded-md mb-4" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Bônus+Questões';">
+                        <img src="https://m.media-amazon.com/images/I/61cgL9cf6wL._SL1000_.jpg" alt="Capa do Material Bônus Digital de 1500 Questões" class="w-full h-56 object-contain rounded-md mb-4" width="160" height="224" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/969696?text=Bônus+Questões';">
                         <div class="my-6 text-center">
-                                       <span class="text-5xl font-bold text-blue-600">R$24,99</span>
+                                         <span class="text-5xl font-bold text-blue-600">R$24,99</span>
                         </div>
                         <p class="text-center text-blue-600 font-semibold text-xl mb-2">
                             1500 QUESTÕES DE CONCURSOS <span class="block text-lg">(GABARITADAS - PDF)</span>
@@ -1121,6 +1147,8 @@
         </div>
     </footer>
 
+    <!-- Scripts JavaScript movidos para o final do body para não bloquear a renderização -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         const today = new Date();
         const formattedDate = today.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
@@ -1146,6 +1174,7 @@
         });
     </script>
 
+    <!-- Dados estruturados (Schema.org) para SEO -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",

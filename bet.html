@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta name="robots" content="noindex">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planilha de Apostas Esportivas Simuladas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .table-header {
+            background-color: #1f2937; /* bg-gray-800 */
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .status-select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6 text-center">Simulador de Apostas Esportivas</h1>
+
+        <!-- Dashboard Section -->
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h2 class="text-sm font-medium text-gray-500">Banca Inicial</h2>
+                <div class="flex items-center">
+                    <span class="text-2xl font-semibold">R$</span>
+                    <input type="number" id="bancaInicial" value="1000" class="text-2xl font-semibold w-full ml-1 p-1 border-b-2 border-transparent focus:border-blue-500 outline-none">
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h2 class="text-sm font-medium text-gray-500">Banca Atual</h2>
+                <p id="bancaAtual" class="text-2xl font-semibold text-blue-600">R$ 1.000,00</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h2 class="text-sm font-medium text-gray-500">Lucro/Prejuízo</h2>
+                <p id="lucroTotal" class="text-2xl font-semibold text-gray-700">R$ 0,00</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h2 class="text-sm font-medium text-gray-500">ROI</h2>
+                <p id="roi" class="text-2xl font-semibold text-gray-700">0,00%</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h2 class="text-sm font-medium text-gray-500">Apostas</h2>
+                <p id="totalApostas" class="text-2xl font-semibold text-gray-700">0</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h2 class="text-sm font-medium text-gray-500">Taxa de Acerto</h2>
+                <p id="winRate" class="text-2xl font-semibold text-gray-700">0,00%</p>
+            </div>
+        </div>
+
+        <!-- Add Bet Section -->
+        <div class="bg-white p-6 rounded-lg shadow mb-8">
+            <h2 class="text-xl font-bold mb-4">Adicionar Nova Aposta</h2>
+            <form id="addBetForm" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 items-end">
+                <div class="flex-grow">
+                    <label for="jogo" class="block text-sm font-medium text-gray-700">Jogo/Partida</label>
+                    <input type="text" id="jogo" placeholder="Ex: Flamengo vs Vasco" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                </div>
+                <div class="flex-grow">
+                    <label for="mercado" class="block text-sm font-medium text-gray-700">Mercado</label>
+                    <input type="text" id="mercado" placeholder="Ex: Resultado Final" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                </div>
+                <div class="flex-grow">
+                    <label for="odd" class="block text-sm font-medium text-gray-700">Odd</label>
+                    <input type="number" id="odd" step="0.01" placeholder="Ex: 1.85" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                </div>
+                <div class="flex-grow">
+                    <label for="valor" class="block text-sm font-medium text-gray-700">Valor Apostado (R$)</label>
+                    <input type="number" id="valor" step="0.01" placeholder="Ex: 10.00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                </div>
+                <div class="flex-grow col-span-1 md:col-span-2 lg:col-span-1">
+                    <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 h-10">Adicionar Aposta</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Bets Table -->
+        <div class="bg-white rounded-lg shadow overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="table-header">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Data</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Jogo/Partida</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Mercado</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Odd</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Valor Apostado</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Status</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Lucro/Prejuízo</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="betsTableBody" class="bg-white divide-y divide-gray-200">
+                    <!-- Rows will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // State Management
+        let bets = [];
+        let nextId = 1;
+
+        // DOM Elements
+        const form = document.getElementById('addBetForm');
+        const bancaInicialInput = document.getElementById('bancaInicial');
+        const tableBody = document.getElementById('betsTableBody');
+
+        // Event Listeners
+        form.addEventListener('submit', handleAddBet);
+        bancaInicialInput.addEventListener('change', updateDashboard);
+        document.addEventListener('DOMContentLoaded', loadFromLocalStorage);
+
+        // Functions
+        function handleAddBet(e) {
+            e.preventDefault();
+
+            const jogoInput = document.getElementById('jogo');
+            const mercadoInput = document.getElementById('mercado');
+            const oddInput = document.getElementById('odd');
+            const valorInput = document.getElementById('valor');
+            
+            // Basic validation
+            if (!jogoInput.value || !mercadoInput.value || !oddInput.value || !valorInput.value) {
+                alert('Por favor, preencha todos os campos da aposta.');
+                return;
+            }
+            if (parseFloat(oddInput.value) <= 1) {
+                alert('A odd deve ser maior que 1.');
+                return;
+            }
+             if (parseFloat(valorInput.value) <= 0) {
+                alert('O valor apostado deve ser maior que zero.');
+                return;
+            }
+
+            const newBet = {
+                id: nextId++,
+                date: new Date(),
+                jogo: jogoInput.value,
+                mercado: mercadoInput.value,
+                odd: parseFloat(oddInput.value),
+                valor: parseFloat(valorInput.value),
+                status: 'Aberta' // Default status
+            };
+
+            bets.push(newBet);
+            saveToLocalStorage();
+            renderTable();
+            updateDashboard();
+
+            form.reset();
+            jogoInput.focus();
+        }
+
+        function renderTable() {
+            tableBody.innerHTML = ''; // Clear existing table
+            if (bets.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-10 text-gray-500">Nenhuma aposta registrada ainda.</td></tr>`;
+                return;
+            }
+
+            // Render bets in reverse chronological order
+            [...bets].reverse().forEach(bet => {
+                const row = document.createElement('tr');
+                row.className = bet.status === 'Ganha' ? 'bg-green-50' : bet.status === 'Perdida' ? 'bg-red-50' : 'bg-white';
+                
+                const lucro = calculateLucro(bet);
+
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${new Date(bet.date).toLocaleDateString('pt-BR')}</td>
+                    <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">${bet.jogo}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${bet.mercado}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${bet.odd.toFixed(2)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatCurrency(bet.valor)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <select data-id="${bet.id}" class="status-select rounded-md border-gray-300 shadow-sm p-2 bg-transparent">
+                            <option value="Aberta" ${bet.status === 'Aberta' ? 'selected' : ''}>Aberta</option>
+                            <option value="Ganha" ${bet.status === 'Ganha' ? 'selected' : ''}>Ganha</option>
+                            <option value="Perdida" ${bet.status === 'Perdida' ? 'selected' : ''}>Perdida</option>
+                            <option value="Anulada" ${bet.status === 'Anulada' ? 'selected' : ''}>Anulada</option>
+                        </select>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium ${lucro > 0 ? 'text-green-600' : lucro < 0 ? 'text-red-600' : 'text-gray-500'}">
+                        ${lucro !== null ? formatCurrency(lucro) : '—'}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button data-id="${bet.id}" class="delete-btn text-red-600 hover:text-red-900">Excluir</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Add event listeners for new elements
+            document.querySelectorAll('.status-select').forEach(select => {
+                select.addEventListener('change', handleStatusChange);
+            });
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', handleDeleteBet);
+            });
+        }
+
+        function handleStatusChange(e) {
+            const betId = parseInt(e.target.dataset.id);
+            const newStatus = e.target.value;
+            const bet = bets.find(b => b.id === betId);
+            if (bet) {
+                bet.status = newStatus;
+                saveToLocalStorage();
+                renderTable(); // Re-render to update colors and values
+                updateDashboard();
+            }
+        }
+
+        function handleDeleteBet(e) {
+            const betId = parseInt(e.target.dataset.id);
+            if (confirm('Tem certeza que deseja excluir esta aposta?')) {
+                bets = bets.filter(b => b.id !== betId);
+                saveToLocalStorage();
+                renderTable();
+                updateDashboard();
+            }
+        }
+
+        function updateDashboard() {
+            const bancaInicial = parseFloat(bancaInicialInput.value) || 0;
+            
+            let lucroTotal = 0;
+            let totalInvestido = 0;
+            let ganhas = 0;
+            let perdidas = 0;
+
+            bets.forEach(bet => {
+                const lucro = calculateLucro(bet);
+                if (lucro !== null) {
+                    lucroTotal += lucro;
+                }
+                if (bet.status !== 'Aberta' && bet.status !== 'Anulada') {
+                    totalInvestido += bet.valor;
+                    if(bet.status === 'Ganha') ganhas++;
+                    if(bet.status === 'Perdida') perdidas++;
+                }
+            });
+
+            const bancaAtual = bancaInicial + lucroTotal;
+            const roi = totalInvestido > 0 ? (lucroTotal / totalInvestido) * 100 : 0;
+            const totalApostasResolvidas = ganhas + perdidas;
+            const winRate = totalApostasResolvidas > 0 ? (ganhas / totalApostasResolvidas) * 100 : 0;
+
+            // Update DOM
+            document.getElementById('bancaAtual').textContent = formatCurrency(bancaAtual);
+            document.getElementById('lucroTotal').textContent = formatCurrency(lucroTotal);
+            document.getElementById('roi').textContent = `${roi.toFixed(2)}%`;
+            document.getElementById('totalApostas').textContent = bets.length;
+            document.getElementById('winRate').textContent = `${winRate.toFixed(2)}%`;
+
+            // Update colors based on values
+            const lucroEl = document.getElementById('lucroTotal');
+            lucroEl.classList.toggle('text-green-600', lucroTotal > 0);
+            lucroEl.classList.toggle('text-red-600', lucroTotal < 0);
+            lucroEl.classList.toggle('text-gray-700', lucroTotal === 0);
+            
+            const roiEl = document.getElementById('roi');
+            roiEl.classList.toggle('text-green-600', roi > 0);
+            roiEl.classList.toggle('text-red-600', roi < 0);
+            roiEl.classList.toggle('text-gray-700', roi === 0);
+        }
+
+        function calculateLucro(bet) {
+            switch (bet.status) {
+                case 'Ganha':
+                    return bet.valor * (bet.odd - 1);
+                case 'Perdida':
+                    return -bet.valor;
+                case 'Anulada':
+                    return 0;
+                default: // Aberta
+                    return null;
+            }
+        }
+        
+        function formatCurrency(value) {
+            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        // Persistence with LocalStorage
+        function saveToLocalStorage() {
+            localStorage.setItem('simuladorApostas', JSON.stringify(bets));
+            localStorage.setItem('simuladorBancaInicial', bancaInicialInput.value);
+        }
+
+        function loadFromLocalStorage() {
+            const savedBets = localStorage.getItem('simuladorApostas');
+            const savedBanca = localStorage.getItem('simuladorBancaInicial');
+
+            if (savedBets) {
+                bets = JSON.parse(savedBets);
+                // Find the highest ID to continue the sequence
+                if (bets.length > 0) {
+                    nextId = Math.max(...bets.map(b => b.id)) + 1;
+                }
+            }
+            if (savedBanca) {
+                bancaInicialInput.value = savedBanca;
+            }
+            
+            renderTable();
+            updateDashboard();
+        }
+    </script>
+</body>
+</html>
